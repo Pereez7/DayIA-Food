@@ -22,6 +22,11 @@ versionado semántico cuando exista una primera versión publicable.
 - Modelo de dominio canónico con estados, pagos, caja, dinero, numeración,
   permisos, impresión, invariantes y 25 escenarios adversariales.
 - ADR-0002 a ADR-0004 para ciclo comercial, dinero/numeración y pago/caja.
+- Matrices de selección tecnológica, estrategia de repositorio y despliegue.
+- ADR-0005 a ADR-0007 para web/contratos, backend/datos/auth y
+  monorepo/toolchain.
+- ADR-0008 propuesto y gate de spike para el agente local de impresión.
+- Veinticinco escenarios adversariales del stack.
 
 ### Changed
 
@@ -47,6 +52,12 @@ versionado semántico cuando exista una primera versión publicable.
 - Pago mixto pasó de evaluación pendiente a `excluded-from-mvp`.
 - Estados de impresión adaptados para no equiparar envío al OS con impresión
   física.
+- Dirección tecnológica actualizada a React/TypeScript/Vite, API
+  Node/Fastify, Supabase PostgreSQL/Auth/Realtime y pnpm workspaces.
+- Estrategias de seguridad, pruebas, quality gates y rendimiento concretadas
+  como contratos futuros sin declarar herramientas instaladas.
+- Siguiente gate cambiado a `phase-0-data-and-auth-review`; Fase 1 sigue
+  bloqueada.
 
 ### Security
 
@@ -56,5 +67,8 @@ versionado semántico cuando exista una primera versión publicable.
   control obligatorio; el contexto recibido del cliente no es confiable.
 - Matriz de roles y auditoría de acciones sensibles definidas con denegación por
   defecto y autorización secundaria de owner cuando aplica.
+- API autoritativa, RLS en profundidad, SQL parametrizado, escaneo futuro de
+  secretos/dependencias y credenciales por dispositivo establecidos como
+  controles del stack.
 
 No se crea `v1.0.0`: el proyecto continúa en planificación.

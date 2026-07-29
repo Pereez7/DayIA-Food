@@ -2,9 +2,9 @@
 
 ## Estado
 
-Los presupuestos son **provisionales y pendientes de baseline medible**. En esta
-etapa no existen aplicación, entorno ni tráfico representativo; por tanto, fijar
-números definitivos sería inventar precisión.
+Los presupuestos son **provisionales y pendientes de baseline medible**. Se fijan
+objetivos iniciales para detectar regresiones, pero no se declaran aprobados: no
+existen todavía aplicación, entorno ni tráfico representativo.
 
 Fase 0 debe definir el procedimiento de medición. La primera implementación
 ejecutable debe producir un baseline. Sólo después podrán aprobarse umbrales
@@ -23,18 +23,20 @@ numéricos con contexto de dispositivo, red, carga y percentil.
 
 | Categoría | Inicio de medición | Contexto mínimo | Presupuesto provisional |
 |---|---|---|---|
-| Carga inicial | Primera versión navegable | Dispositivo y red definidos | Baseline + umbral aprobado |
-| Respuesta del punto de venta | Primera acción operativa ejecutable | Catálogo y carga representativos | Baseline + umbral aprobado |
-| Agregar productos | `ORDER-001` ejecutable | Pedido y personalización representativos | Baseline + umbral aprobado |
-| Confirmar pedido | Confirmación disponible | Persistencia y validaciones reales | Baseline + umbral aprobado |
-| Actualización de cocina | `KITCHEN-001` ejecutable | Dos clientes y transporte real | Baseline + umbral aprobado |
-| Cola de impresión | Primera versión ejecutable de `PRINT-001` | Agente y hardware identificados | Baseline + umbral aprobado |
-| Tamaño de recursos | Primer build de producción | Compresión y caché definidas | Baseline + límite por recurso aprobado |
-| Consultas de base de datos | Persistencia aprobada | Datos y plan representativos | Baseline + límites por recorrido |
-| Conexión lenta | Primer recorrido E2E | Perfil de red reproducible | Degradación y feedback aprobados |
+| Carga inicial | Primera versión navegable | móvil medio, 4G y desktop POS | LCP p75 ≤ 2.5 s; INP ≤ 200 ms; CLS ≤ 0.1 |
+| Respuesta del punto de venta | Primera acción operativa ejecutable | catálogo representativo | interacción local p95 ≤ 100 ms |
+| Agregar productos | `ORDER-001` ejecutable | pedido con modificadores | p95 ≤ 100 ms local |
+| Confirmar pedido | persistencia real | red normal y API | p95 ≤ 1 s sin impresión |
+| API | primer caso de uso real | carga normal acordada | lectura p95 ≤ 500 ms; comando p95 ≤ 800 ms |
+| Actualización de cocina | `KITCHEN-001` ejecutable | dos clientes y transporte real | aviso p95 ≤ 2 s; convergencia fallback ≤ 10 s |
+| Cola de impresión | agente/spike real | agente y hardware identificados | claim online ≤ 5 s; envío a OS ≤ 3 s tras claim |
+| Tamaño de recursos | primer build | Brotli/gzip y caché | JS inicial gzip ≤ 250 KiB; transferencia inicial ≤ 500 KiB |
+| Consultas de base de datos | persistencia aprobada | datos/plan representativos | dentro del presupuesto del caso de uso |
+| Conexión lenta | primer recorrido E2E | slow 4G reproducible | shell utilizable ≤ 5 s y feedback inmediato |
 
-Ninguna fila se considera aprobada mientras conserve “baseline + umbral
-aprobado”.
+Son objetivos de diseño, no evidencia. Si el baseline demuestra que un número no
+representa la necesidad del usuario, se cambia mediante revisión explícita, no
+para ocultar una regresión.
 
 ## Protocolo de baseline
 
@@ -77,10 +79,20 @@ en `TECH_DEBT.md`, responsable, impacto y fecha límite.
 
 ## Decisiones pendientes
 
-- entornos y dispositivos de referencia;
-- perfiles de red;
+- dispositivo POS y móvil de referencia;
+- perfiles exactos de red y concurrencia;
 - datos y concurrencia representativos;
-- herramientas de medición;
-- percentiles y umbrales por categoría;
+- límites CPU/memoria/instalador del agente tras spike;
 - retención de resultados y tendencia;
 - criterios diferenciados para piloto y producción.
+
+## Instrumentación prevista
+
+- Web Vitals y Lighthouse para carga/interacción/layout;
+- Playwright para recorridos y perfiles de red;
+- análisis de artefactos Vite para tamaño;
+- temporización Pino/Sentry y métricas del host para API;
+- `EXPLAIN (ANALYZE, BUFFERS)` sobre datos representativos para consultas;
+- medición Windows de CPU, memoria, disco y tiempos del agente.
+
+La medición física de salida de papel se separa de `submitted-to-os`.

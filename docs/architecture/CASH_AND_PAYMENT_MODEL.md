@@ -73,6 +73,6 @@ atómicos de pago, caja, auditoría y comprobantes antes de habilitarse.
 
 ## Decisiones técnicas pendientes
 
-Mecanismos físicos de exclusión, transacción, retención y autenticación de
-autorización secundaria corresponden al gate de stack/ADR técnico. No modifican
-ADR-0004.
+Mecanismos físicos PostgreSQL de exclusión, transacción y retención, junto con la
+sesión para autorización secundaria, corresponden a
+`phase-0-data-and-auth-review`. No modifican ADR-0004.

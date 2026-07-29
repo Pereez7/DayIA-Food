@@ -70,7 +70,11 @@ solicitud → validación/autorización → transacción
 → aviso durable → consumidor/cola → agente/intento
 ```
 
-La herramienta concreta queda pendiente.
+La implementación inicial prevista es Pino JSON en la API, captura de errores
+web/API con Sentry después de aprobar privacidad, métricas nativas del host y
+Supabase, y logs JSON locales rotativos/exportables del agente. Todos propagan
+`correlation_id`. OpenTelemetry/APM completo queda diferido hasta que baseline o
+diagnóstico lo justifiquen.
 
 ## Auditoría frente a observabilidad
 
@@ -121,7 +125,7 @@ cierres o transiciones.
 
 ## Decisiones pendientes
 
-- plataforma y formato de telemetría;
+- proveedor/plan Sentry o alternativa y región;
 - retención de auditoría, logs, métricas y trazas;
 - integridad y acceso al registro de auditoría;
 - responsables y canales de alerta;

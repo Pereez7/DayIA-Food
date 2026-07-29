@@ -63,8 +63,39 @@ propósito, tiempos, estado y correlation ID; no incluyen secretos ni contenido
 personal innecesario. Se miden edad de cola, fallos, incertidumbre, desconexión y
 reimpresiones.
 
-## Decisiones técnicas pendientes
+## Dirección técnica
 
-Tecnología, protocolo, formato, transporte, leases, registro de dispositivo,
-empaquetado y actualización del agente requieren ADR técnico y pruebas con
-hardware real. La arquitectura no selecciona runtime ni proveedor.
+La aplicación web y el agente siguen siendo artefactos separados. El agente
+inicia conexiones HTTPS salientes hacia la API para reclamar trabajos mediante
+lease; la web nunca abre un socket local ni habla con la impresora. Esta
+dirección reduce CORS, puertos entrantes y reglas de firewall locales.
+
+| Alternativa | Ventajas | Costos/riesgos | Estado |
+|---|---|---|---|
+| Tauri 2 | instalador Windows por usuario, huella menor, UI web opcional | Rust/adaptador, firma, AV, drivers y updates sin probar | needs-spike; preferida |
+| QZ Tray | soporte maduro de ESC/POS y navegador | WebSocket local, certificados/firma/licencia y dependencia del proveedor | fallback |
+| Electron | ecosistema Node y empaquetado conocido | runtime pesado y shell completa innecesaria | rejected |
+| servicio Node local | JavaScript compartido | ciclo de servicio, instalación y seguridad operativa | rejected |
+| navegador directo | simplicidad aparente | diálogo, permisos y poca observabilidad/deduplicación | rejected |
+
+El agente puede terminar un job ya reclamado durante una interrupción breve, pero
+no inventa trabajo nuevo ni promete modo offline. Al reconectar primero
+reconcilia leases y resultados.
+
+## Gate del spike de impresión
+
+Antes de aceptar Tauri se debe demostrar en Windows 10/11:
+
+1. instalación y desinstalación por usuario sin privilegio administrador;
+2. firma, antivirus, firewall, arranque y actualización/rollback;
+3. impresión silenciosa en dos modelos térmicos objetivo, tanto ruta raw ESC/POS
+   como driver cuando aplique;
+4. sin papel, apagado, error, Unicode y corte;
+5. reinicio en cada punto de lease sin duplicación automática;
+6. enrolamiento, rotación y revocación de identidad del dispositivo;
+7. consumo de CPU, memoria, disco y tiempos contra presupuesto provisional;
+8. logs locales rotativos, redactados y exportables para soporte.
+
+Si un criterio bloqueante falla, comparar QZ Tray con la misma matriz. Formato,
+lease, protocolo, credenciales, compatibilidad y canal de actualización siguen
+pendientes; `PRINT-001` y `PRINT-002` permanecen bloqueadas.

@@ -267,7 +267,7 @@ No se asume event sourcing.
 
 No existen migraciones en esta etapa. Antes de crear la primera:
 
-1. aprobar motor y modelo físico mediante ADR;
+1. aprobar modelo físico PostgreSQL y políticas RLS mediante el gate de datos;
 2. convertir relaciones conceptuales en restricciones comprobables;
 3. definir procedimiento de aplicación y rollback;
 4. definir respaldo y recuperación;
@@ -280,7 +280,7 @@ Una migración aplicada será aditiva; no se editará para ocultar un cambio.
 Las decisiones de dominio anteriores están resueltas por ADR-0002 a ADR-0004.
 Permanecen exclusivamente decisiones técnicas:
 
-- motor y modelo físico, restricciones e índices;
+- modelo físico PostgreSQL, restricciones e índices;
 - forma física del aislamiento organizacional;
 - duración de retención de idempotencia, auditoría e impresión;
 - transacciones, locking/versionado y publicación durable;

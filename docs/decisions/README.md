@@ -7,9 +7,10 @@ difícil de revertir. Complementan `SYSTEM_ARCHITECTURE.md`: la arquitectura pue
 proponer opciones, pero sólo un ADR aprobado convierte una elección técnica en
 decisión vigente.
 
-Las decisiones de alcance y dominio `ADR-0001` a `ADR-0004` están aceptadas.
-Stack, persistencia física, mecanismos de autenticación, tiempo real, agente de
-impresión, offline y tenancy siguen pendientes de ADR técnicos separados.
+Las decisiones de alcance y dominio `ADR-0001` a `ADR-0004` y las direcciones de
+stack `ADR-0005` a `ADR-0007` están aceptadas. El runtime del agente en
+`ADR-0008` sigue propuesto y condicionado a spike. Persistencia física, sesión,
+offline y tenancy detallado conservan gates propios.
 
 ## Cuándo crear un ADR
 
@@ -93,3 +94,7 @@ Un ADR rechazado o propuesto no autoriza dependencias ni código.
 | [ADR-0002](002-ciclo-comercial-del-pedido.md) | Ciclo comercial del pedido | accepted | 2026-07-29 |
 | [ADR-0003](003-dinero-precios-y-numeracion.md) | Dinero, precios y numeración visible | accepted | 2026-07-29 |
 | [ADR-0004](004-pago-y-turno-de-caja.md) | Pago único y turno de caja organizacional | accepted | 2026-07-29 |
+| [ADR-0005](005-stack-web-y-contratos.md) | Stack web, estado, estilos y contratos | accepted | 2026-07-29 |
+| [ADR-0006](006-plataforma-backend-datos-y-auth.md) | Plataforma backend, datos y autenticación | accepted | 2026-07-29 |
+| [ADR-0007](007-monorepo-y-toolchain.md) | Monorepo y toolchain de calidad | accepted | 2026-07-29 |
+| [ADR-0008](008-direccion-del-agente-de-impresion.md) | Dirección del agente local de impresión | proposed | 2026-07-29 |

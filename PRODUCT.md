@@ -60,8 +60,9 @@ capacidades diferenciadoras justificadas.
    organización explícita; multi-sucursal continúa fuera de alcance.
 4. **Especialización explícita.** Las reglas de pizza no se dispersan por todo el
    núcleo.
-5. **Decisiones técnicas aplazables.** El alcance aprobado no selecciona
-   frameworks, base de datos, autenticación, impresión ni infraestructura.
+5. **Decisiones técnicas trazables.** El stack seleccionado sirve al alcance
+   aprobado; las opciones inciertas requieren ADR, spike y evidencia antes de
+   implementarse.
 6. **Terminado demostrable.** Ninguna capacidad se considera entregada sin
    evidencia ejecutable.
 7. **Operación segura.** No se debilitan controles para acelerar una entrega.
@@ -73,9 +74,14 @@ El alcance vinculante está en [`MVP_SCOPE.md`](MVP_SCOPE.md), las fases en
 Inventario, compras, proveedores, mesas, delivery avanzado, promociones
 avanzadas, fidelización, multi-sucursal e integraciones permanecen fuera del MVP.
 
-## Decisiones pendientes
+## Dirección técnica aprobada
 
-No se han elegido framework web, backend, base de datos, mecanismo de
-autenticación, transporte de tiempo real, agente de impresión, infraestructura ni
-diseño visual. Cada elección requiere su propia sesión y, cuando corresponda, un
-ADR aceptado.
+La dirección inicial es una SPA React/TypeScript, API Node/TypeScript
+autoritativa, PostgreSQL/Auth/Realtime administrados por Supabase, monorepo pnpm
+y agente local de impresión separado. La selección detallada y sus límites están
+en [`TECHNOLOGY_STACK.md`](docs/architecture/TECHNOLOGY_STACK.md) y ADR-0005 a
+ADR-0008.
+
+Siguen pendientes de evidencia el runtime final del agente, el modelo físico y
+RLS, el ciclo exacto de sesión y el proveedor concreto de despliegue. No existe
+todavía diseño visual ni autorización para inicializar la aplicación.

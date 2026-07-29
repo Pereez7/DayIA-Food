@@ -9,6 +9,20 @@ demás.
 No se fija un porcentaje global arbitrario de cobertura. La revisión se realiza
 por comportamiento, criticidad, bordes y riesgo residual.
 
+## Toolchain seleccionado
+
+- Vitest para reglas y módulos TypeScript;
+- React Testing Library para comportamiento accesible de componentes;
+- Vitest contra Supabase local para integración de API;
+- pgTAP para restricciones, funciones y políticas RLS;
+- pruebas de contrato sobre Zod/OpenAPI y compatibilidad del agente;
+- Playwright para recorridos E2E en navegadores objetivo;
+- Lighthouse/Web Vitals y telemetría propia para rendimiento;
+- Gitleaks, OSV-Scanner y auditoría de pnpm para seguridad de supply chain.
+
+No están instalados. Su selección no cuenta como ejecución ni permite omitir un
+gate.
+
 ## Pirámide de pruebas
 
 1. **Unitarias:** muchas, rápidas y deterministas para reglas puras.
@@ -180,3 +194,30 @@ Por ejecución:
 
 Una prueba omitida debe justificar por qué no aplica; “todavía no configurada”
 bloquea el gate correspondiente.
+
+## Comandos contractuales futuros
+
+| Suite | Comando |
+|---|---|
+| Unitarias | `pnpm test:unit` |
+| Integración | `pnpm test:integration` |
+| Contratos | `pnpm test:contract` |
+| E2E | `pnpm test:e2e` |
+| Completa | `pnpm test` |
+
+Cada script se implementará al inicializar la toolchain. Hasta entonces su estado
+es `blocked`, no `pass`.
+
+## Cobertura y flakiness
+
+Se exige cobertura de invariantes y ramas de riesgo, no un porcentaje global
+decorativo. El reporte V8 se conserva y cada módulo crítico puede tener un umbral
+justificado. Una prueba flaky es una prueba rota: se investiga o bloquea; no se
+silencia con reintentos, `.skip` o reducción de assertions.
+
+## CI futura
+
+GitHub Actions ejecutará typecheck, lint, format, unitarias, integración,
+contratos, E2E crítico, build, secretos y dependencias. Las acciones se fijan por
+SHA, los permisos son mínimos y ningún pull request puede declarar terminado un
+scope con checks omitidos.

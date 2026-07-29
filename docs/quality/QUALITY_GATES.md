@@ -106,21 +106,39 @@ Además de los gates de fase:
 
 No se crea `v1.0.0` durante planificación. La preparación ocurre en Fase 1.5.
 
-## Comandos pendientes de selección
+## Comandos seleccionados, aún no implementados
 
-Fase 0 debe sustituir cada marcador por un comando real y ejecutarlo:
-
-| Gate | Comando | Estado actual |
+| Gate | Comando contractual | Estado actual |
 |---|---|---|
-| Typecheck | Pendiente de stack aprobado | blocked |
-| Lint | Pendiente de stack aprobado | blocked |
-| Unit tests | Pendiente de stack aprobado | blocked |
-| Integration tests | Pendiente de stack aprobado | blocked |
-| E2E | Pendiente de stack aprobado | blocked |
-| Production build | Pendiente de stack aprobado | blocked |
-| Security review | Pendiente de toolchain aprobado | blocked |
-| Accessibility review | Pendiente de superficie y toolchain | blocked |
-| Performance verification | Pendiente de baseline | blocked |
+| Typecheck | `pnpm typecheck` | blocked: no existe toolchain |
+| Lint | `pnpm lint` | blocked: no existe toolchain |
+| Format | `pnpm format:check` | blocked: no existe toolchain |
+| Unit tests | `pnpm test:unit` | blocked: no existe código |
+| Integration tests | `pnpm test:integration` | blocked: no existe entorno |
+| Contract tests | `pnpm test:contract` | blocked: no existen contratos |
+| E2E | `pnpm test:e2e` | blocked: no existe aplicación |
+| Production build | `pnpm build` | blocked: no existe aplicación |
+| Dependency review | `pnpm security:dependencies` | blocked: no hay dependencias |
+| Secret scan | `pnpm security:secrets` | blocked: no existe script |
+| Full verify | `pnpm verify` | blocked: no existe composición |
+| Accessibility | automatizado + teclado/lector manual | blocked: no existe UI |
+| Performance | protocolo de `PERFORMANCE_BUDGET.md` | blocked: no hay baseline |
 
-La falta actual de comandos es esperada en documentación de Fase 0, pero impide
-cerrarla.
+Los nombres son el contrato que deberá materializar una sesión futura. No se
+declara ningún comando ejecutado ni verde.
+
+## Gate adicional de stack
+
+Antes de instalar una dependencia:
+
+- verificar versión estable, runtime soportado, licencia y advisories;
+- justificar necesidad y frontera;
+- comparar alternativa nativa o ya presente;
+- registrar impacto de bundle/operación;
+- actualizar lockfile y ejecutar auditoría completa;
+- no aceptar una vulnerabilidad crítica; una alta requiere excepción formal en
+  `TECH_DEBT.md`.
+
+Antes de aceptar el agente Tauri debe pasar el spike de
+[`PRINTING_ARCHITECTURE.md`](../architecture/PRINTING_ARCHITECTURE.md). Antes de
+producción deben probarse RLS, restore, rollback y hardware real.

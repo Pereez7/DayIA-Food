@@ -79,8 +79,26 @@ de hipótesis transitorias.
   `organization_id` cliente.
 - 2026-07-29: impresión usa `submitted` como aceptación de OS, no certeza física;
   `delivery-unknown` no se reintenta automáticamente.
+- 2026-07-29: `phase-0-stack-review` aprobó con acciones React/TypeScript/Vite,
+  una API Node 24 LTS/Fastify y PostgreSQL/Auth/Realtime administrados por
+  Supabase. La API conserva autoridad y RLS es defensa en profundidad.
+- 2026-07-29: ADR-0005 aceptó React Router, TanStack Query para remoto, React
+  para estado local/derivado, Zustand sólo para borradores POS, Zod/RHF, CSS
+  Modules/tokens, Lucide e `Intl`.
+- 2026-07-29: ADR-0006 aceptó SQL parametrizado con `pg`, repositorios,
+  transacciones y avisos Realtime que fuerzan refetch; schema, RLS y sesión se
+  resuelven en el gate de datos/autenticación.
+- 2026-07-29: ADR-0007 aceptó monorepo pnpm y toolchain TypeScript/ESLint/
+  Prettier/Vitest/Testing Library/Playwright/pgTAP/Gitleaks/OSV, todavía sin
+  instalar.
+- 2026-07-29: ADR-0008 permanece `proposed`: web y agente están separados,
+  Tauri 2 es candidato sujeto a spike Windows/hardware y QZ Tray es contingencia.
+- 2026-07-29: despliegue separa web estática, API contenedorizada, Supabase y
+  agente local; el proveedor concreto requiere comparación de región, costo,
+  rollback y restore.
 
 ## Próximo paso
 
-Tras aprobar `phase-0-domain-review`, ejecutar `phase-0-stack-review` sin
-instalar dependencias ni implementar código.
+Ejecutar `phase-0-data-and-auth-review` para definir schema PostgreSQL,
+migraciones, RLS, sesión, secretos y pruebas de aislamiento, sin inicializar la
+aplicación.

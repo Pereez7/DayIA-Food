@@ -3,12 +3,21 @@
   "current_phase": "phase-0",
   "phase_status": "in-progress",
   "current_feature": "CORE-001",
-  "next_gate": "phase-0-stack-review",
+  "next_gate": "phase-0-data-and-auth-review",
   "scope_decision": "ADR-0001",
   "domain_decisions": [
     "ADR-0002",
     "ADR-0003",
     "ADR-0004"
+  ],
+  "technical_decisions": [
+    "ADR-0005",
+    "ADR-0006",
+    "ADR-0007",
+    "ADR-0008"
+  ],
+  "proposed_decisions": [
+    "ADR-0008"
   ],
   "allowed_statuses": [
     "not-started",
@@ -55,8 +64,9 @@
         "CORE-001"
       ],
       "blockers": [
-        "technical ADR and stack decisions pending",
-        "quality commands not configured"
+        "phase-0 data and auth review pending",
+        "print-agent spike pending",
+        "quality commands selected but not configured"
       ]
     },
     {
@@ -243,7 +253,7 @@
       ],
       "blockers": [
         "phase-0 not completed",
-        "authentication mechanism ADR pending"
+        "phase-0 data and auth review pending"
       ]
     },
     {
@@ -308,7 +318,7 @@
       ],
       "blockers": [
         "phase-0 not completed",
-        "printing protocol and agent ADR pending"
+        "print-agent spike and protocol decision pending"
       ]
     },
     {
@@ -330,7 +340,7 @@
       ],
       "blockers": [
         "phase-0 not completed",
-        "printing protocol and agent ADR pending"
+        "print-agent spike and protocol decision pending"
       ]
     },
     {

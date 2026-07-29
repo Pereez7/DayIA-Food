@@ -63,6 +63,7 @@ pedido cancelado conserva su número y los huecos son válidos.
 
 ## Decisiones técnicas pendientes
 
-Persisten para `phase-0-stack-review`: mecanismo de transacción, versionado,
-retención de idempotencia, publicación durable y actualización en tiempo real.
-No alteran las reglas aceptadas en ADR-0002 y ADR-0003.
+Persisten para `phase-0-data-and-auth-review`: SQL/aislamiento exactos,
+versionado, retención de idempotencia, publicación durable y políticas de
+Realtime. ADR-0006 ya fijó PostgreSQL y avisos que fuerzan refetch; estos detalles
+no alteran ADR-0002 y ADR-0003.

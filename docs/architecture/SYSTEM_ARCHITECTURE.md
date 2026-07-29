@@ -101,8 +101,9 @@ Frontera autoritativa para:
 - emitir resultados y eventos observables;
 - coordinar persistencia e integraciones.
 
-La separación física del backend respecto de la aplicación web está pendiente de
-aprobación. El límite lógico debe existir aunque el despliegue inicial sea simple.
+ADR-0006 aprobó una API Node/Fastify separada de la SPA. Se despliega como
+artefacto contenedorizado independiente y conserva el límite lógico aun si web y
+API comparten proveedor.
 
 ## Núcleo y verticales
 
@@ -120,8 +121,9 @@ Reglas propuestas:
 ## Base de datos
 
 Debe preservar consistencia, trazabilidad y aislamiento. El diseño conceptual se
-encuentra en [`DATABASE_DESIGN.md`](DATABASE_DESIGN.md). El motor, modelo físico,
-tipos, índices, particiones y estrategia de migración siguen pendientes.
+encuentra en [`DATABASE_DESIGN.md`](DATABASE_DESIGN.md). PostgreSQL administrado
+por Supabase es el motor aceptado; modelo físico, tipos, índices, RLS y estrategia
+de migración corresponden al siguiente gate.
 
 ## Actualización en tiempo real
 
@@ -231,14 +233,13 @@ Toda evolución debe mantener:
 
 ## Decisiones pendientes
 
-- stack de aplicación web y backend;
-- motor y topología de persistencia;
-- transporte de actualización en tiempo real;
-- mecanismo de autenticación, sesiones y aplicación de permisos;
+- modelo físico PostgreSQL, transacciones, RLS y migraciones;
+- detalle de sesión, revocación y aplicación física de permisos;
+- publicación durable y autorización exacta de Realtime;
 - estrategia de operación degradada;
-- protocolo y distribución del agente de impresión;
-- modelo de despliegue, observabilidad y secretos;
-- estrategia de aislamiento por organización;
+- runtime/protocolo/distribución del agente tras spike;
+- proveedor/región, retención, alertas y gestor de secretos;
+- aislamiento físico por organización;
 - estrategia futura de múltiples sucursales.
 
 Ningún punto de esta lista se considera aprobado por aparecer en este documento.

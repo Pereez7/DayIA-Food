@@ -39,7 +39,12 @@ concreto, no una contraseña compartida ni una excepción de interfaz.
 
 ## Autenticación y sesiones
 
-Requisitos lógicos:
+Supabase Auth es la plataforma seleccionada para identidad. El MVP usa
+email/contraseña y alta administrativa: no hay registro público, OAuth social ni
+MFA hasta otra fase. La API Fastify valida la sesión y vuelve a resolver
+membresía/rol; un claim o estado React nunca es autoridad.
+
+Requisitos:
 
 - credenciales protegidas con mecanismo aprobado posteriormente;
 - sesión con expiración, revocación y rotación cuando corresponda;
@@ -88,13 +93,15 @@ secretos, datos bancarios, contenido completo innecesario ni PII sin finalidad.
 ## Secretos
 
 - Nunca se versionan ni se envían al navegador.
-- Se inyectan por mecanismo de entorno/secretos pendiente de selección.
+- Se inyectan desde el gestor de secretos del host; el proveedor concreto se
+  decide con el despliegue.
 - Se separan por ambiente y privilegio.
 - Se rotan y revocan.
 - Logs y errores los redactan.
 - Credenciales de agente son específicas por dispositivo y alcance.
 
-`.mcp.json` sólo referencia `${GITHUB_TOKEN}`; no contiene el valor.
+`.mcp.json` sólo referencia `${GITHUB_TOKEN}`; no contiene el valor. La clave
+pública/anon de Supabase puede estar en web, pero jamás una service-role key.
 
 ## Separación de ambientes
 
@@ -106,7 +113,8 @@ Desarrollo, pruebas y producción deben tener:
 - endpoints/configuración inequívocos;
 - promoción de artefactos sin reutilizar secretos.
 
-La topología y proveedor están pendientes.
+La topología está en [`DEPLOYMENT_MODEL.md`](DEPLOYMENT_MODEL.md); el proveedor
+concreto sigue pendiente.
 
 ## Amenazas prioritarias
 
@@ -122,11 +130,24 @@ La topología y proveedor están pendientes.
 | Secretos en logs | allowlist de campos y redacción |
 | Entorno equivocado | separación de credenciales y configuración visible |
 
+## Controles técnicos seleccionados
+
+- PostgreSQL/RLS como defensa en profundidad y pruebas pgTAP negativas;
+- API autoritativa, validación runtime y SQL parametrizado;
+- TLS en tránsito y cifrado administrado en reposo;
+- Gitleaks para secretos y OSV-Scanner/auditor de pnpm para dependencias;
+- cabeceras, CORS allowlist, límites de cuerpo/rate y errores sin detalle sensible;
+- logs allowlist con `correlation_id`, sin tokens ni payloads completos;
+- credencial única, rotatoria, revocable y de alcance mínimo por agente.
+
 ## Decisiones y pruebas pendientes
 
-- ADR de autenticación, sesiones y credenciales;
-- ADR de tenancy físico;
+- transporte/almacenamiento de sesión, renovación, revocación y recuperación;
+- políticas RLS y tenancy físico;
 - retención de auditoría y privacidad;
-- mecanismo de secretos y rotación;
-- threat model técnico al seleccionar stack;
+- proveedor de secretos y procedimiento de rotación;
+- rate limits, CORS y cabeceras exactos;
 - pruebas de sesión, IDOR, rol, dispositivo, suscripción y redacción.
+
+Estas decisiones se resuelven en `phase-0-data-and-auth-review`; ninguna ausencia
+se interpreta como control aprobado.
