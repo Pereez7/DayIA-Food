@@ -1,6 +1,6 @@
-# Diseño conceptual de datos
+# Diseño conceptual y autoridad de datos
 
-> **Estado: conceptual y pendiente de aprobación.**
+> **Estado lógico: revisado con acciones pendientes — 2026-07-29.**
 >
 > No es un esquema físico. No define motor, tablas, columnas, tipos, claves,
 > índices, restricciones concretas ni migraciones.
@@ -141,6 +141,69 @@ Relaciones conceptuales:
 
 No se decide formato, protocolo, retención, agente ni estructura física.
 
+## Matriz de autoridad e historial
+
+| Concepto | Registro autoritativo | Historial mínimo preservado |
+|---|---|---|
+| Organización | Organización persistida | altas, cambios sensibles y estado |
+| Usuario, membresía y rol | Identidad y membresía activas | actor, cambio de rol/estado y momento servidor |
+| Pedido | Pedido confirmado y versionado | creación, transición, cancelación y actor |
+| Línea de pedido | Instantánea dentro del pedido | nombre, cantidad, opciones y precios confirmados |
+| Cocina | Estado vigente y transiciones aceptadas | origen, destino, versión, actor y tiempo servidor |
+| Pago | Cobro exitoso único por pedido | medio, importe, usuario, caja e idempotencia |
+| Sesión de caja | Sesión abierta/cerrada | apertura, cierre, esperado, contado y diferencia |
+| Movimiento de caja | Movimiento aceptado | tipo, importe, motivo, origen y actor |
+| Trabajo de impresión | Trabajo durable del servidor | propósito, reimpresión, intentos y resultado |
+
+Una caché, un mensaje, una vista materializada o el estado del agente puede
+acelerar lectura, pero debe reconciliarse con estos registros.
+
+## Unidades conceptuales de transacción
+
+Sin definir motor ni tablas, las siguientes operaciones deben comprometerse
+atómicamente:
+
+1. confirmar pedido, líneas, instantáneas, total, número visible, clave de
+   idempotencia y registro auditable;
+2. aceptar una transición de pedido/cocina, incrementar versión y registrar el
+   aviso durable pendiente;
+3. abrir caja y garantizar que no exista otra sesión abierta incompatible;
+4. registrar un cobro, marcar el pedido pagado y crear el movimiento de venta
+   aplicable;
+5. registrar un movimiento manual con su motivo dentro de una caja abierta;
+6. cerrar una caja una sola vez, conservando esperado, contado y diferencia;
+7. crear un trabajo de impresión o reimpresión y su referencia de negocio;
+8. aceptar cada resultado del agente sin borrar intentos anteriores.
+
+Una notificación externa puede publicarse después, pero la intención durable para
+reintentar debe quedar comprometida con el cambio de dominio. No se promete una
+transacción distribuida con navegador, canal de tiempo real, agente o hardware.
+
+## Idempotencia y concurrencia conceptual
+
+- La clave se evalúa dentro de organización, operación y actor o dispositivo.
+- Repetir clave y huella de carga devuelve el resultado original.
+- Repetir clave con otra carga produce conflicto y no modifica datos.
+- Versiones monotónicas o precondiciones evitan transiciones perdidas.
+- Unicidad lógica impide doble pago, doble cierre y duplicado de propósito de
+  impresión.
+- Los relojes cliente no ordenan operaciones; el servidor asigna tiempo y
+  versión autoritativos.
+- El periodo de retención de claves y el mecanismo físico quedan pendientes.
+
+## Invariantes financieras
+
+- Un pedido tiene como máximo un cobro exitoso dentro del MVP.
+- Un cobro aceptado referencia pedido, usuario, organización y caja abierta.
+- El movimiento de venta no puede existir dos veces por el mismo cobro.
+- El efectivo esperado se deriva de monto inicial, cobros en efectivo, ingresos
+  manuales y retiros; QR manual y transferencia se concilian por separado y no
+  aumentan el efectivo físico.
+- Una caja cerrada no acepta nuevos movimientos.
+- Reimpresión nunca crea pedido, pago ni movimiento de caja.
+- Corregir o revertir un cobro requiere una política posterior; no se modela como
+  edición destructiva.
+
 ## Dominios de fases futuras
 
 ### Fase 2
@@ -217,3 +280,7 @@ Una migración aplicada será aditiva; no se editará para ocultar un cambio.
 - modelo físico de organización sin adelantar multi-sucursal;
 - representación de caja, cobro y trabajos de impresión;
 - evaluación posterior de pago mixto.
+- formato y alcance de numeración visible del pedido;
+- matriz exacta de transiciones y cancelación;
+- política de reversos o anulaciones después del cobro;
+- periodo de retención de idempotencia, auditoría e intentos de impresión.

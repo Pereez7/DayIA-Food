@@ -3,7 +3,7 @@
   "current_phase": "phase-0",
   "phase_status": "in-progress",
   "current_feature": "CORE-001",
-  "next_gate": "phase-0-architecture-review",
+  "next_gate": "phase-0-domain-review",
   "scope_decision": "ADR-0001",
   "allowed_statuses": [
     "not-started",
@@ -50,7 +50,7 @@
         "CORE-001"
       ],
       "blockers": [
-        "architecture and stack decisions pending",
+        "technical ADR and stack decisions pending",
         "quality commands not configured"
       ]
     },
@@ -303,7 +303,7 @@
       ],
       "blockers": [
         "phase-0 not completed",
-        "printing architecture not approved"
+        "printing protocol and agent ADR pending"
       ]
     },
     {
@@ -325,7 +325,7 @@
       ],
       "blockers": [
         "phase-0 not completed",
-        "printing architecture not approved"
+        "printing protocol and agent ADR pending"
       ]
     },
     {

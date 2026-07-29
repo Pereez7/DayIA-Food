@@ -17,6 +17,8 @@ versionado semántico cuando exista una primera versión publicable.
 - Quality gates, estrategia de pruebas, Definition of Done, presupuesto de
   rendimiento y checklist de release.
 - Registro de deuda técnica y guía para Architecture Decision Records.
+- Contratos lógicos de componentes, pedidos, caja/cobros, impresión,
+  conectividad, seguridad y observabilidad.
 
 ### Changed
 
@@ -33,10 +35,14 @@ versionado semántico cuando exista una primera versión publicable.
 - Memoria del proyecto actualizada con decisiones estables.
 - Hook de formato de LoopKit ajustado para no silenciar fallos ni instalar
   Prettier implícitamente.
+- Arquitectura lógica del MVP revisada como `approved-with-actions`, manteniendo
+  pendientes stack, ADR técnicos y revisión de dominio.
 
 ### Security
 
 - Se estableció que controles de seguridad, permisos y revisión adversarial no
   pueden omitirse para cerrar una funcionalidad, fase o release.
+- Organización definida como frontera de datos y autorización servidor como
+  control obligatorio; el contexto recibido del cliente no es confiable.
 
 No se crea `v1.0.0`: el proyecto continúa en planificación.

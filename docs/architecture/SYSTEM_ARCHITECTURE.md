@@ -1,10 +1,14 @@
-# Arquitectura inicial propuesta
+# Arquitectura lógica del MVP
 
-> **Estado: propuesta pendiente de aprobación.**
+> **Estado de revisión: approved-with-actions — 2026-07-29.**
 >
 > Este documento no decide tecnologías, proveedores ni dependencias y no autoriza
 > implementación. Toda decisión difícil de revertir requiere un ADR según
 > [`docs/decisions/README.md`](../decisions/README.md).
+
+La revisión aprueba las fronteras, fuentes de verdad y garantías lógicas
+descritas aquí. Las acciones pendientes al final del documento bloquean la
+selección de stack y el inicio de Fase 1.
 
 ## Objetivos arquitectónicos
 
@@ -38,6 +42,40 @@ Interfaz de backend / contratos
 
 Esta vista expresa responsabilidades, no procesos, servicios desplegables ni
 productos concretos.
+
+## Documentos de detalle
+
+- [`COMPONENT_BOUNDARIES.md`](COMPONENT_BOUNDARIES.md): componentes,
+  responsabilidades, transacciones, idempotencia y fallos independientes.
+- [`ORDER_LIFECYCLE.md`](ORDER_LIFECYCLE.md): identidad, instantáneas, estados y
+  concurrencia de pedidos y cocina.
+- [`CASH_AND_PAYMENT_MODEL.md`](CASH_AND_PAYMENT_MODEL.md): caja, cobros,
+  movimientos y cierres.
+- [`PRINTING_ARCHITECTURE.md`](PRINTING_ARCHITECTURE.md): cola durable, agente,
+  impresoras, reintentos y certeza física.
+- [`OFFLINE_AND_SYNC.md`](OFFLINE_AND_SYNC.md): clasificación de conectividad,
+  reconciliación y orden de eventos.
+- [`SECURITY_MODEL.md`](SECURITY_MODEL.md): organización, membresía, roles,
+  sesiones y secretos.
+- [`OBSERVABILITY.md`](OBSERVABILITY.md): auditoría, correlación, eventos y
+  errores rastreables.
+
+Estos documentos son contratos lógicos coordinados. Ninguno selecciona procesos,
+productos, protocolos, motor de datos ni topología de despliegue.
+
+## Fuentes de verdad
+
+| Concepto | Fuente de verdad autoritativa |
+|---|---|
+| Organización, usuarios, membresías y roles | Registros persistidos de identidad y acceso validados por el servidor |
+| Pedido, líneas e importes históricos | Pedido persistido con instantáneas comerciales confirmadas |
+| Estado de pedido y cocina | Estado/version vigente y su historial de transiciones aceptadas |
+| Pago | Registro único de cobro confirmado por el servidor |
+| Sesión y movimientos de caja | Sesión persistida y movimientos aceptados dentro de ella |
+| Trabajo e intentos de impresión | Cola durable del servidor y confirmaciones registradas del agente |
+
+El estado local del navegador es borrador o caché. Los mensajes en tiempo real
+son avisos para volver a consultar. Ninguno sustituye la fuente autoritativa.
 
 ## Aplicación web
 
@@ -204,3 +242,53 @@ Toda evolución debe mantener:
 - estrategia futura de múltiples sucursales.
 
 Ningún punto de esta lista se considera aprobado por aparecer en este documento.
+
+## Revisión adversarial obligatoria
+
+| # | Escenario y riesgo | Protección arquitectónica | Limitación | Decisión pendiente o bloqueo |
+|---|---|---|---|---|
+| 1 | El cajero confirma dos veces: pedido duplicado. | Misma clave de idempotencia y misma carga devuelven el resultado original; carga distinta produce conflicto. | No evita que el usuario inicie intencionalmente otro pedido con otra clave. | Definir expiración y formato de claves en el contrato técnico. |
+| 2 | El servidor guarda el pedido y se pierde la respuesta. | El reintento conserva la clave y recupera el pedido persistido. | El navegador debe conservar temporalmente clave y huella de la solicitud. | Seleccionar almacenamiento cliente y contrato de recuperación. |
+| 3 | Cocina queda desconectada cinco minutos. | Al reconectar consulta estado vigente e historial desde un cursor/version; no confía en avisos perdidos. | No se prometen cambios de estado offline. | Probar ventana y volumen de reconciliación. |
+| 4 | Falla el canal de tiempo real. | La operación autoritativa continúa; la vista muestra degradación y consulta explícita/periódica. | La actualización puede llegar tarde. | Elegir transporte y objetivo de latencia. |
+| 5 | La impresora está apagada. | El agente informa fallo; el trabajo permanece trazable y reintentable con límite. | No hay salida física hasta intervención. | Definir códigos de error y política de reintentos. |
+| 6 | Sale el ticket, pero no hay confirmación del sistema operativo. | El intento queda `delivery-unknown`; no se reimprime automáticamente. | No puede saberse con certeza que el papel salió. | Definir procedimiento humano ante resultado incierto. |
+| 7 | El agente recibe dos veces el mismo trabajo. | Identificador estable y registro local de trabajos aceptados evitan una segunda ejecución automática. | La durabilidad local depende del agente elegido. | ADR del protocolo y persistencia del agente. |
+| 8 | Se solicita reimprimir. | Nueva solicitud auditada referencia el trabajo original y no ejecuta pedido ni cobro. | Puede producir una copia física adicional, explícitamente marcada. | Definir permisos y motivo obligatorio por tipo. |
+| 9 | Dos usuarios cobran el mismo pedido. | Restricción lógica de un cobro exitoso y transacción condicional; sólo uno gana. | El perdedor debe refrescar y explicar el resultado. | Precisar reversos antes de permitir cancelar un pedido cobrado. |
+| 10 | Dos usuarios cierran la misma caja. | Cambio condicional de `open` a `closed`, versión y un único cierre válido. | Una segunda solicitud sólo recupera el cierre existente. | Definir operaciones pendientes que bloquean cierre. |
+| 11 | El precio cambia después de vender. | Líneas confirmadas conservan nombre, opciones, precio e importes históricos. | La referencia al catálogo puede apuntar a una versión nueva. | Definir precisión y redondeo en revisión de dominio. |
+| 12 | El cliente altera `organization_id`. | El servidor deriva organización desde sesión y membresía; ignora/rechaza contexto no autorizado. | Requiere aislamiento aplicado en toda consulta y comando. | ADR técnico de tenancy y pruebas negativas. |
+| 13 | Cocina intenta acceder a caja. | Autorización servidor por acción; rol cocina carece de permisos de caja. | Ocultar controles en UI no es protección. | Definir matriz contractual completa de permisos. |
+| 14 | El navegador se recarga durante el cobro. | Consulta del pedido y reintento con la misma clave recuperan pago o estado cobrable. | Una clave perdida exige reconciliar antes de reintentar. | Definir persistencia temporal segura de la intención. |
+| 15 | Se cancela después de enviar a cocina. | Cancelación es transición auditada y notificada; cocina reconcilia la versión. | Cancelar tras preparación causa impacto operativo; tras cobro queda bloqueado. | Regla exacta por estado y política de reverso en revisión de dominio; bloquea implementación. |
+| 16 | Expira la sesión durante una operación. | Autenticación y autorización se revalidan al aceptar el comando; fallo no produce efecto parcial. | Una operación ya confirmada no se revierte por expiración posterior. | Elegir mecanismo de sesión y renovación. |
+| 17 | El dispositivo tiene hora incorrecta. | Orden, auditoría y vencimientos usan tiempo del servidor; hora cliente es sólo diagnóstico. | Sin sincronización puede confundir al usuario. | Definir presentación de zona horaria y desfase. |
+| 18 | Llegan eventos fuera de orden. | Cada agregado expone versión monotónica; consumidores ignoran avisos antiguos y reconcilian huecos. | Los avisos no constituyen historial autoritativo. | Elegir formato de versión/cursor y retención. |
+
+## Veredicto y acciones
+
+**Veredicto lógico:** `approved-with-actions`.
+
+Quedan aprobados:
+
+- servidor y persistencia como autoridad;
+- navegador y tiempo real como proyecciones no autoritativas;
+- límites modulares de pedidos, cocina, caja, pagos, impresión, acceso,
+  auditoría y sincronización;
+- transacciones atómicas para invariantes financieras y de estado;
+- idempotencia para comandos repetibles;
+- reconciliación después de desconexión;
+- cola durable del servidor y agente local como único acceso a impresoras;
+- aislamiento por organización y autorización obligatoria del lado servidor;
+- observabilidad correlacionada sin datos sensibles innecesarios.
+
+Acciones que siguen bloqueando implementación:
+
+- revisar vocabulario, estados, cancelación, importes y numeración visible en
+  `phase-0-domain-review`;
+- aprobar ADR técnicos de persistencia, autenticación/sesiones, tenancy, tiempo
+  real y agente de impresión;
+- seleccionar stack y convertir quality gates en comandos ejecutables;
+- validar impresión, reconexión y certeza limitada con hardware real en la fase
+  correspondiente.

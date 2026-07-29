@@ -55,7 +55,15 @@ de hipótesis transitorias.
   Fase 0.
 - 2026-07-28: arquitectura, datos y presupuestos son propuestas; no se aprobaron
   stack, dependencias ni decisiones técnicas definitivas.
+- 2026-07-29: `phase-0-architecture-review` aprobó con acciones las fronteras
+  lógicas, fuentes de verdad, transacciones, idempotencia, reconciliación,
+  impresión, seguridad y observabilidad del MVP.
+- 2026-07-29: persistencia servidor es autoridad; navegador y tiempo real son
+  proyecciones. El agente local es el único componente que accede a impresoras y
+  no puede garantizar que el papel haya salido físicamente.
+- 2026-07-29: no se aprobó offline-first, stack, motor, autenticación, transporte,
+  protocolo de impresión ni topología. Fase 1 permanece bloqueada.
 
 ## Próximo paso
 
-Ejecutar `phase-0-architecture-review` sin elegir stack ni implementar código.
+Ejecutar `phase-0-domain-review` sin elegir stack ni implementar código.
