@@ -45,9 +45,8 @@ de hipótesis transitorias.
 - 2026-07-28: `IMPLEMENTATION_PLAN.md` permanece en `STATUS: planning`.
 - 2026-07-28: una fase sólo habilita la siguiente con criterios de salida,
   evidencia ejecutable y aprobación explícita.
-- 2026-07-28: la fase actual es `phase-0`, en estado documental;
-  `phase-0-entry-review` resolvió el alcance y el siguiente gate es
-  `phase-0-architecture-review`.
+- 2026-07-28: la fase actual es `phase-0`, en estado documental; Fase 1 sigue
+  bloqueada hasta cerrar todos sus gates.
 - 2026-07-28: `ADR-0001` aceptó incorporar al MVP el flujo comercial mínimo de
   autenticación → caja → POS/pedido → cocina → cobro → impresión → cierre.
 - 2026-07-28: POS, autenticación, caja, cobro e impresión dejaron de estar
@@ -63,7 +62,25 @@ de hipótesis transitorias.
   no puede garantizar que el papel haya salido físicamente.
 - 2026-07-29: no se aprobó offline-first, stack, motor, autenticación, transporte,
   protocolo de impresión ni topología. Fase 1 permanece bloqueada.
+- 2026-07-29: ADR-0002 aceptó estados `confirmed`, `in-preparation`, `ready`,
+  `completed` y `cancelled`; `draft` no es pedido. Confirmar envía a cocina sin
+  exigir pago, el pedido queda inmutable y `completed` significa pagado y
+  entregado.
+- 2026-07-29: un pedido pagado no se cancela en el MVP; reversos y devoluciones
+  están fuera. Las cancelaciones permitidas conservan historia y exigen motivo.
+- 2026-07-29: ADR-0003 fijó BOB en centavos enteros, dos decimales sin redondeo
+  silencioso ni float binario, snapshots de precio, sin descuentos y número
+  visible diario por organización generado por servidor.
+- 2026-07-29: ADR-0004 fijó un pago exitoso máximo por pedido, intentos
+  idempotentes y pago mixto `excluded-from-mvp`. Caja es un turno organizacional
+  compartido, único, con estados `open`, `closing`, `closed`.
+- 2026-07-29: roles definitivos owner/cashier/kitchen se autorizan en servidor;
+  la organización se deriva de membresía activa y nunca del
+  `organization_id` cliente.
+- 2026-07-29: impresión usa `submitted` como aceptación de OS, no certeza física;
+  `delivery-unknown` no se reintenta automáticamente.
 
 ## Próximo paso
 
-Ejecutar `phase-0-domain-review` sin elegir stack ni implementar código.
+Tras aprobar `phase-0-domain-review`, ejecutar `phase-0-stack-review` sin
+instalar dependencias ni implementar código.

@@ -1,125 +1,68 @@
-# Ciclo de vida de pedidos y cocina
+# Arquitectura del ciclo de pedido
 
-## Identidad y confirmación
+> **Reglas de dominio aceptadas — 2026-07-29.**
 
-- El pedido recibe un identificador interno globalmente estable dentro del
-  sistema y una organización autoritativa.
-- El cliente genera una clave de idempotencia antes de confirmar y la conserva
-  hasta resolver el resultado.
-- El servidor asigna un número visible único dentro del contexto y periodo que se
-  defina en `phase-0-domain-review`.
-- El número visible nunca reemplaza al identificador interno.
-- Confirmar persiste pedido, líneas, selecciones, instantáneas, total, versión,
-  número e idempotencia en una sola unidad.
-- Doble confirmación equivalente devuelve el pedido original; misma clave con
-  carga distinta produce conflicto.
+La fuente canónica de estados, matriz, cancelación y criterios de prueba es
+[`ORDER_STATES.md`](../domain/ORDER_STATES.md). Este documento fija cómo esas
+reglas se integran con la arquitectura lógica sin elegir tecnología.
 
-## Instantánea histórica
+## Autoridad y creación
 
-Cada línea confirmada conserva al menos:
+El navegador mantiene una propuesta `draft`, nunca un pedido autoritativo. La
+confirmación:
 
-- referencia al producto de origen;
-- nombre presentado en la venta;
-- cantidad;
-- nombres y efectos de opciones seleccionadas;
-- precio unitario confirmado;
-- ajustes aprobados, subtotal y total correspondientes;
-- precisión y regla de redondeo, una vez decididas.
+1. deriva organización y rol de la sesión;
+2. valida catálogo, variantes, modificadores, cantidades e importes actuales;
+3. recalcula en centavos y rechaza total cero;
+4. aplica idempotencia;
+5. asigna ID técnico y número visible en servidor;
+6. persiste pedido, snapshots, estado `confirmed`, historial, auditoría e
+   intención durable de comanda en una operación atómica.
 
-Cambiar catálogo, nombres u ofertas no reescribe la venta histórica.
+Una respuesta perdida se recupera con la misma clave. La proyección de cocina
+recibe el pedido confirmado; no existe `sent-to-kitchen` como estado.
 
-## Estados mínimos
+## Ciclo autoritativo
 
 ```text
-confirmed
-   | \
-   |  \--> cancelled
-   v
-sent-to-kitchen
-   | \
-   |  \--> cancelled
-   v
-preparing
-   | \
-   |  \--> cancelled (regla y permiso pendientes)
-   v
-ready
+confirmed ──> in-preparation ──> ready ──> completed
+    │                 │             │
+    └─────────────────┴─────────────┴──> cancelled
 ```
 
-`draft` pertenece al navegador y no es un pedido confirmado. `paid` pertenece al
-modelo de pago, no sustituye el estado operativo. No se permite saltar estados,
-retroceder ni repetir efectos; una repetición idempotente puede recuperar la
-transición ya aceptada.
+Las flechas a `cancelled` están sujetas a estado, ausencia de pago, motivo y
+autorización. `completed` exige pago confirmado y entrega. No se salta, repite,
+retrocede ni reabre un estado. Todas las transiciones sensibles se validan en
+servidor contra estado y versión vigentes.
 
-## Transiciones
+## Historial y snapshots
 
-| Comando | Precondición mínima | Actor |
-|---|---|---|
-| Confirmar | carrito válido, caja abierta, catálogo revalidado | cajero o propietario |
-| Enviar a cocina | `confirmed` y versión vigente | cajero o propietario |
-| Iniciar preparación | `sent-to-kitchen` y versión vigente | cocina o propietario autorizado |
-| Marcar listo | `preparing` y versión vigente | cocina o propietario autorizado |
-| Cancelar | estado cancelable, motivo, versión y ausencia de bloqueo financiero | permiso por definir; nunca sólo UI |
+El pedido confirmado conserva producto, variante, modificadores, observaciones,
+cantidad, precios y totales. No admite edición; cambios de catálogo no lo
+reescriben. `OrderStatusHistory` es append-only y conserva actor, organización,
+origen, destino, razón, correlation ID, versión y hora servidor.
 
-Toda transición guarda actor, organización, origen, destino, razón cuando
-corresponda, versión y tiempo servidor.
+## Pago, impresión y fallos
 
-## Cocina y reconciliación
+- preparación y pago son ejes separados; cocina puede trabajar un pedido
+  `unpaid`;
+- `Payment` es autoridad de `paid`, nunca la interfaz;
+- impresión es un efecto durable posterior; fallo o estado desconocido no
+  revierte el pedido;
+- una comanda histórica no se borra al cancelar; cocina recibe la cancelación y
+  rechaza transiciones posteriores;
+- eventos en tiempo real sólo invalidan/actualizan proyecciones versionadas;
+  fuera de orden se ignoran y se reconcilian por consulta;
+- el MVP no acepta transiciones offline.
 
-La vista recibe avisos de:
+## Identidad visible
 
-- pedido enviado;
-- cambio de estado aceptado;
-- cancelación;
-- indicación de que existe una versión más nueva.
+ID técnico, idempotencia y número visible siguen
+[`NUMBERING.md`](../domain/NUMBERING.md). Hora y secuencia son de servidor; un
+pedido cancelado conserva su número y los huecos son válidos.
 
-El aviso no transporta autoridad definitiva. Al iniciar, reconectar, detectar un
-hueco o recibir una versión antigua, cocina consulta pedidos vigentes y cambios
-desde su cursor. Sólo aplica una proyección si la versión es posterior a la
-conocida.
+## Decisiones técnicas pendientes
 
-Si el canal falla, la vista muestra estado degradado y continúa reconciliando por
-consulta. Los cambios de cocina requieren conexión en el MVP; no se promete una
-cola offline de transiciones.
-
-## Envío e impresión
-
-Aceptar `sent-to-kitchen` crea de forma durable la intención de notificar cocina
-y el propósito de impresión correspondiente. La transición no se revierte si
-falla la impresora. Cocina debe poder ver el pedido y el fallo de impresión por
-separado.
-
-Un trabajo repetido con el mismo propósito se deduplica. Una reimpresión es una
-acción nueva, explícita y auditada.
-
-## Recuperación y concurrencia
-
-- Respuesta perdida: consultar/reintentar por idempotencia.
-- Recarga: recuperar pedido desde el servidor; el carrito local no decide si fue
-  confirmado.
-- Dos transiciones: la primera que cumple versión/precondición gana; la otra
-  recibe conflicto y debe reconciliar.
-- Eventos fuera de orden: ignorar versión antigua; consultar si existe hueco.
-- Hora incorrecta: usar tiempo y secuencia servidor.
-- Sesión expirada: rechazar antes del efecto; luego de confirmar, devolver el
-  resultado persistido sólo a una sesión nuevamente autorizada.
-
-## Cancelación y límites
-
-- Toda cancelación requiere motivo y auditoría.
-- Después de enviar, cocina recibe el aviso y reconcilia; no se borra la comanda
-  histórica.
-- Cancelar durante preparación tiene costo operativo y su permiso exacto queda
-  pendiente.
-- Un pedido cobrado no se cancela hasta definir reverso/anulación; esta decisión
-  bloquea ese caso de uso.
-- Reembolso, devolución y crédito no se incorporan por esta arquitectura.
-
-## Decisiones pendientes para `phase-0-domain-review`
-
-- nombres definitivos y matriz exacta de estados;
-- regla de cancelación por estado y rol;
-- formato, alcance y reinicio del número visible;
-- precisión, impuestos si aplican y redondeo;
-- relación exacta entre estado operativo y estado de pago;
-- retención de claves y del historial.
+Persisten para `phase-0-stack-review`: mecanismo de transacción, versionado,
+retención de idempotencia, publicación durable y actualización en tiempo real.
+No alteran las reglas aceptadas en ADR-0002 y ADR-0003.

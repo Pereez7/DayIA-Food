@@ -1,6 +1,6 @@
 # Diseño conceptual y autoridad de datos
 
-> **Estado lógico: revisado con acciones pendientes — 2026-07-29.**
+> **Estado lógico y de dominio: revisado — 2026-07-29.**
 >
 > No es un esquema físico. No define motor, tablas, columnas, tipos, claves,
 > índices, restricciones concretas ni migraciones.
@@ -20,15 +20,15 @@
 
 Organización representa el límite de propiedad y aislamiento de datos del MVP.
 
-**Restaurante** representa la unidad operativa inicial dentro de una organización.
+En el MVP una organización representa también la única unidad operativa. No se
+crea una entidad `Restaurant` separada porque aún no existe multi-sucursal.
 
 Relaciones conceptuales:
 
 - una organización contiene el contexto operativo autorizado;
 - usuarios, catálogo, pedidos, caja e impresión pertenecen a una organización;
-- un restaurante mantiene un catálogo;
-- un restaurante recibe pedidos;
-- un restaurante define el contexto de disponibilidad y operación.
+- la organización mantiene un catálogo y recibe pedidos;
+- la organización define el contexto de disponibilidad y operación.
 
 **Sucursal** y la administración multi-sucursal son conceptos de Fase 4. El MVP
 no debe crear múltiples sucursales.
@@ -39,8 +39,8 @@ no debe crear múltiples sucursales.
 
 **Producto** representa un elemento vendible común a cualquier vertical.
 
-**Oferta o precio vigente** expresa la condición comercial aplicable cuando se
-crea una línea.
+**Variante de producto y precio vigente** expresa la presentación vendible
+aplicable cuando se crea una línea.
 
 **Disponibilidad** indica si una oferta puede seleccionarse en un contexto
 operativo.
@@ -68,7 +68,8 @@ Relaciones conceptuales:
 - una línea de pedido conserva las selecciones aceptadas;
 - las reglas de pizza especializan configuración, no el concepto de pedido.
 
-Los nombres y límites definitivos requieren especificación de `PIZZA-001`.
+Los nombres canónicos comunes son `Product`, `ProductVariant`, `ModifierGroup` y
+`Modifier`. Las reglas específicas de pizza siguen requiriendo `PIZZA-001`.
 
 ### Pedidos
 
@@ -124,7 +125,12 @@ Relaciones conceptuales:
 - un cierre conserva contado, esperado y diferencia;
 - una repetición no crea doble cobro o movimiento.
 
-Pago mixto y fiscalidad permanecen fuera hasta una decisión posterior.
+Pago mixto tiene estado `excluded-from-mvp`; fiscalidad permanece fuera.
+
+Los conceptos mínimos y sus invariantes están en
+[`DOMAIN_MODEL.md`](../domain/DOMAIN_MODEL.md). No obligan una tabla por concepto:
+`KitchenProjection` puede ser derivada y los agregados pueden consolidarse si se
+preservan autoridad, historia y restricciones.
 
 ### Impresión
 
@@ -151,7 +157,7 @@ No se decide formato, protocolo, retención, agente ni estructura física.
 | Línea de pedido | Instantánea dentro del pedido | nombre, cantidad, opciones y precios confirmados |
 | Cocina | Estado vigente y transiciones aceptadas | origen, destino, versión, actor y tiempo servidor |
 | Pago | Cobro exitoso único por pedido | medio, importe, usuario, caja e idempotencia |
-| Sesión de caja | Sesión abierta/cerrada | apertura, cierre, esperado, contado y diferencia |
+| Sesión de caja | Estado `open`, `closing` o `closed` | apertura, autorizaciones, cierre, esperado, contado y diferencia |
 | Movimiento de caja | Movimiento aceptado | tipo, importe, motivo, origen y actor |
 | Trabajo de impresión | Trabajo durable del servidor | propósito, reimpresión, intentos y resultado |
 
@@ -245,16 +251,17 @@ Las decisiones futuras deben demostrar al menos:
 
 ## Ciclo de vida y auditoría
 
-Debe decidirse por dominio:
+- propuestas no confirmadas pueden descartarse;
+- pedidos confirmados, pagos, cajas cerradas, intentos, historiales y auditoría
+  son inmutables o append-only;
+- catálogo actual puede cambiar, conservando snapshots de venta;
+- no se borra físicamente un pedido confirmado;
+- cada transición y acción sensible registra actor, organización, entidad,
+  acción, resultado, hora servidor, correlation ID y valores anteriores/nuevos
+  relevantes;
+- retención y recuperación física se decidirán con el diseño técnico.
 
-- qué puede editarse;
-- qué debe versionarse o registrarse como evento;
-- qué puede archivarse;
-- qué exige auditoría;
-- qué retención y eliminación corresponde;
-- cómo se recupera ante una operación parcial.
-
-No se asume borrado físico ni event sourcing.
+No se asume event sourcing.
 
 ## Migraciones
 
@@ -270,17 +277,12 @@ Una migración aplicada será aditiva; no se editará para ocultar un cambio.
 
 ## Decisiones pendientes
 
-- identidad exacta del restaurante en el MVP;
-- vocabulario definitivo de producto, oferta, variante y opción;
-- estados y transiciones de pedido;
-- representación y precisión de importes;
-- estrategia de instantáneas históricas;
-- idempotencia y concurrencia;
-- retención y auditoría;
-- modelo físico de organización sin adelantar multi-sucursal;
-- representación de caja, cobro y trabajos de impresión;
-- evaluación posterior de pago mixto.
-- formato y alcance de numeración visible del pedido;
-- matriz exacta de transiciones y cancelación;
-- política de reversos o anulaciones después del cobro;
-- periodo de retención de idempotencia, auditoría e intentos de impresión.
+Las decisiones de dominio anteriores están resueltas por ADR-0002 a ADR-0004.
+Permanecen exclusivamente decisiones técnicas:
+
+- motor y modelo físico, restricciones e índices;
+- forma física del aislamiento organizacional;
+- duración de retención de idempotencia, auditoría e impresión;
+- transacciones, locking/versionado y publicación durable;
+- respaldo, recuperación y migraciones;
+- recuperación técnica de intentos `pending` después de interrupciones.

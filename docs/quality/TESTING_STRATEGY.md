@@ -65,7 +65,8 @@ Como mínimo, una vez aprobados por alcance:
 - impresión de caja sin duplicar cobro;
 - conexión inestable, reconexión y ausencia de duplicados;
 - reconciliación y existencias críticas en Fase 2;
-- aislamiento entre organizaciones en Fase 4.
+- aislamiento entre organizaciones desde el MVP;
+- aislamiento entre sucursales cuando multi-sucursal se habilite en Fase 4.
 
 Cada E2E debe documentar datos iniciales, acciones, resultados y limpieza.
 
@@ -140,7 +141,8 @@ Cubrir:
 - cierre con operaciones pendientes o usuario sin permiso;
 - consistencia entre pedido, cobro y sesión de caja.
 
-Pago mixto no se prueba como capacidad incluida salvo decisión posterior.
+Pago mixto no se prueba como capacidad incluida: ADR-0004 lo dejó
+`excluded-from-mvp`.
 
 ## Regresión
 

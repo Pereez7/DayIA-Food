@@ -1,148 +1,136 @@
 STATUS: planning
 CURRENT_PHASE: phase-0
-PHASE_STATUS: architecture-review
-CURRENT_FEATURE: phase-0-architecture-review
-NEXT_GATE: phase-0-domain-review
+PHASE_STATUS: domain-review
+CURRENT_FEATURE: phase-0-domain-review
+NEXT_GATE: phase-0-stack-review
 FEATURE_CATALOG_ID: CORE-001
 
 # Plan de implementación
 
-## Objetivo del ciclo actual
+## Objetivo del ciclo
 
-Definir y revisar adversarialmente la arquitectura lógica del MVP antes de
-seleccionar tecnologías: componentes, autoridad, transacciones, idempotencia,
-aislamiento, recuperación, impresión, seguridad y observabilidad.
-
-Esta sesión es documental. El baseline cuenta con el commit inicial
-`1632f27fc60e711aa136c477b71a1c93a5370353`. No se habilita Fase 1 ni se
-autoriza código.
-
-`CURRENT_FEATURE` identifica el ciclo de revisión exigido por esta tarea.
-`FEATURE_CATALOG_ID` identifica la única funcionalidad activa en el catálogo y
-coincide con `FEATURE_STATUS.json.current_feature`. La revisión arquitectónica es
-trabajo de verificación de `CORE-001`, no una segunda funcionalidad.
+Convertir los flujos aprobados del MVP en un contrato de dominio inequívoco:
+entidades, estados, transiciones, invariantes, dinero, numeración, permisos,
+cancelación, caja, pagos, impresión y auditoría. Es una revisión de `CORE-001`,
+no una segunda funcionalidad ni autorización de Fase 1.
 
 ## Resultado de revisión
 
-Veredicto lógico: `approved-with-actions`.
+Veredicto documental: `approved`.
 
-Se aprueban las fronteras y garantías documentadas en
-[`SYSTEM_ARCHITECTURE.md`](docs/architecture/SYSTEM_ARCHITECTURE.md). Las
-acciones pendientes continúan bloqueando implementación y requieren revisiones o
-ADR posteriores.
+La aprobación resuelve el dominio del MVP, no cierra Fase 0, no completa
+`CORE-001` y no autoriza implementación.
 
-## Alcance autorizado del ciclo
+## Alcance autorizado
 
-- definir componentes y fronteras sin fijar topología física;
-- asignar fuentes de verdad para pedidos, cocina, caja, pagos, impresión,
-  usuarios, roles y organización;
-- definir transacciones, idempotencia, auditoría y fallos parciales;
-- revisar pedidos, cocina, caja, cobros, impresión, conectividad, seguridad y
-  observabilidad;
-- ejecutar los 18 escenarios adversariales obligatorios;
-- actualizar arquitectura, estado, memoria y changelog de forma coordinada;
-- verificar que el alcance y Fase 1 sigan bloqueados.
+- definir conceptos y reglas comprobables sin convertirlos en tablas;
+- aceptar ADR de decisiones de dominio difíciles de revertir;
+- actualizar arquitectura lógica y flujos afectados;
+- mantener servidor/persistencia como autoridad;
+- conservar una sola funcionalidad activa y cero `completed`.
 
 ## Fuera de alcance
 
-- código, dependencias, React, Vite, backend o base de datos;
-- componentes, pantallas, migraciones o infraestructura;
-- elección de stack;
-- selección de motor, proveedor, protocolo o topología;
-- aprobación de offline-first;
-- pago mixto;
-- variantes avanzadas de autenticación, POS, cocina, caja, pagos o impresión;
-- inventario, compras, proveedores, mesas, delivery avanzado, promociones
-  avanzadas, multi-sucursal, fidelización e integraciones;
-- commits o push.
+- código, dependencias, stack, SQL, migraciones o infraestructura;
+- frameworks de aplicación, componentes, pantallas o diseño de interfaz;
+- inventario, mesas, delivery avanzado, promociones o multi-sucursal;
+- offline-first, reversos, devoluciones, conciliación bancaria y pago mixto;
+- staging, commit o push.
 
 ## Plan → Act → Verify
 
 ### Plan
 
-- leer todas las fuentes y skills aplicables;
-- identificar decisiones lógicas frente a elecciones técnicas pendientes;
-- definir un contrato documental verificable y escenarios de refutación.
+- leer íntegramente fuentes, quality gates y skills aplicables;
+- confirmar que arquitectura está versionada y el árbol parte limpio;
+- fijar contrato de sesión en `PROMPT.md`.
 
 ### Act
 
-- actualizar únicamente arquitectura y fuentes de estado afectadas;
-- mantener componentes como límites lógicos, no servicios físicos;
-- no crear ADR técnico sin alternativas y aprobación humana;
-- mantener todas las funcionalidades sin `completed`.
+- definir modelo conceptual y nueve contratos canónicos bajo `docs/domain/`;
+- registrar ADR-0002 a ADR-0004;
+- resolver contradicciones/pending de arquitectura y flujos;
+- actualizar ledger, memoria y changelog de forma coordinada.
 
 ### Verify
 
-La evidencia debe demostrar:
+La evidencia debe probar:
 
-1. quince componentes mínimos y sus límites definidos;
-2. fuentes de verdad inequívocas y navegador/tiempo real no autoritativos;
-3. operaciones transaccionales e idempotentes identificadas;
-4. aislamiento por organización y autorización servidor;
-5. reconciliación tras desconexión sin aprobar offline-first;
-6. cola durable, agente local, certeza limitada y reimpresión segura;
-7. auditoría y observabilidad sin datos sensibles innecesarios;
-8. los 18 escenarios con riesgo, protección, limitación y acción/bloqueo;
-9. enlaces locales y JSON válidos;
-10. `FEATURE_STATUS.json` con cero `completed` y Fase 1 bloqueada;
-11. cero código, dependencias, migraciones o selección de stack;
-12. revisión adversarial independiente, estado, diff y resumen mostrados;
-13. ningún commit o push creado.
+1. cinco estados persistidos y matriz completa con actor por transición;
+2. cancelación y pedido pagado resueltos sin borrado;
+3. un pago exitoso máximo, intentos e idempotencia;
+4. pago mixto `excluded-from-mvp`;
+5. caja por turno organizacional, cobros pendientes, cierre concurrente e
+   inmutabilidad;
+6. BOB en centavos enteros, sin float binario ni descuentos;
+7. numeración diaria de servidor separada de ID e idempotencia;
+8. matriz owner/cashier/kitchen y autorización secundaria;
+9. impresión con certeza limitada y reimpresión auditada;
+10. auditoría con campos mínimos y sin secretos;
+11. los 25 escenarios adversariales completos;
+12. JSON y enlaces válidos, diff limpio y revisión adversarial aprobada;
+13. Fase 1 bloqueada, cero `completed` y cero artefactos técnicos;
+14. ningún staging, commit o push.
 
 ## Estado de fases
 
 | Fase | Estado | Motivo |
 |---|---|---|
-| Fase 0 | in-progress | Arquitectura lógica revisada; dominio, ADR técnicos, stack y toolchain pendientes |
-| Fase 1 | blocked | Fase 0 todavía no cumple sus criterios de salida |
+| Fase 0 | in-progress | Dominio aprobado; stack, ADR técnicos y toolchain pendientes |
+| Fase 1 | blocked | Fase 0 no cumple todavía sus criterios de salida |
 | Fase 1.5 | blocked | Fase 1 no está cerrada |
 | Fase 2 | blocked | Fase 1.5 no está cerrada |
 | Fase 3 | blocked | Fase 2 no está cerrada |
 | Fase 4 | blocked | Fase 3 no está cerrada |
 
-## Bloqueos reales restantes
+## Decisiones de dominio aceptadas
 
-- vocabulario, estados, cancelación, numeración e importes pendientes de revisión
-  de dominio;
-- stack y dependencias sin decidir;
-- mecanismo de autenticación sin ADR técnico;
-- arquitectura de impresión y agente local sin ADR técnico;
-- motor y diseño físico de datos sin ADR;
-- tenancy, tiempo real, sincronización y secretos sin ADR técnico;
-- permisos exactos y reglas de caja aún requieren especificación;
-- cancelación de pedido cobrado bloqueada hasta definir reverso/anulación;
-- pago mixto pendiente de evaluación y fuera del alcance aprobado por defecto;
-- comandos de typecheck, lint, tests, build, seguridad y accesibilidad no existen
-  porque todavía no hay stack;
-- baseline y umbrales de rendimiento pendientes.
+- ADR-0002: ciclo del pedido, inmutabilidad y cancelación.
+- ADR-0003: centavos BOB, snapshots, sin descuentos y número diario servidor.
+- ADR-0004: pago único, intentos, pago mixto excluido y turno de caja compartido.
+
+## Bloqueos restantes de Fase 0
+
+- stack, dependencias y comandos de quality gate;
+- motor/modelo físico de datos, transacciones y migraciones;
+- autenticación, sesiones, secretos y tenancy físico;
+- transporte de tiempo real y publicación durable;
+- protocolo, runtime, instalación y seguridad del agente de impresión;
+- retención, respaldo, recuperación, baseline de rendimiento y hardware real.
 
 ## Evidencia del ciclo
 
-- Validador estructural documental: 13 documentos requeridos presentes; 15
-  componentes, 11 fuentes de verdad, 18 escenarios adversariales y 10
-  operaciones de conectividad cubiertos.
-- Primera ejecución del wrapper de `git diff --check`: código `1` porque
-  PowerShell convirtió advertencias CRLF de Git en errores; no hubo hallazgo de
-  contenido. Repetición con captura explícita: código `0`.
-- Matriz semántica: 21/21 requisitos arquitectónicos localizados.
-- Enlaces Markdown locales rotos: 0.
-- `FEATURE_STATUS.json`: parse válido; 26 funcionalidades, 0 `completed`; las 13
-  funcionalidades de Fase 1 conservan el bloqueo `phase-0 not completed`.
-- Catálogo/ledger: 26 IDs, 0 duplicados, 0 estados inválidos, 0 IDs ausentes.
-- Skills de LoopKit: 53/53 con frontmatter y campos requeridos válidos.
-- Secretos detectados en el diff: 0.
-- Código, dependencias, migraciones o directorios de producto creados: 0.
-- Selecciones de React, Vite, Supabase, PostgreSQL, Electron o Tauri en
-  arquitectura: 0.
-- Primera revisión adversarial independiente: `passes: false` por correspondencia
-  ambigua entre ciclo y `CORE-001`; se añadió `FEATURE_CATALOG_ID`.
-- Segunda revisión adversarial independiente: `{"passes":true,"failures":[]}`.
-- Archivos del alcance: 13; cambios ajenos: 0.
-- Commit o push creado durante esta tarea: 0.
+| Control | Comando/procedimiento ejecutado | Salida |
+|---|---|---|
+| Precondición | `git log -1 --format="%h %s"` y `git status --short` antes de actuar | `3c9bebd docs: define MVP logical architecture`; limpio; códigos 0 |
+| JSON/fases | PowerShell inline: `ConvertFrom-Json FEATURE_STATUS.json`; afirmar `completed=0`, 13 features de Fase 1 con blocker y `next_gate=phase-0-stack-review` | PASS, código 0 |
+| Dominio | PowerShell inline: afirmar 12 docs/ADR, 5 estados, 5 filas de transición, 25 escenarios con 7 campos, pago mixto, centavos, permisos, impresión y auditoría | PASS, código 0, 2026-07-29T11:46:13-04:00 |
+| Catálogo/enlaces | PowerShell inline: comparar los 26 IDs catálogo/ledger y resolver cada enlace Markdown local | 26/26; 0 rotos; código 0 |
+| LoopKit | PowerShell inline: enumerar `.claude/skills/*/SKILL.md` y validar delimitadores, `name` y `description` | 53/53; código 0 |
+| Alcance/seguridad | Escanear líneas añadidas y archivos nuevos por patrones de secretos, tecnologías nombradas, manifests y directorios técnicos | 0 secretos, 0 tecnologías, 0 dependencias/código; código 0, 2026-07-29T11:46:33-04:00 |
+| Whitespace | `git diff --check` | código 0 |
+| Staging | `git diff --cached --quiet` | código 0 |
+| Adversarial | Procedimiento `.claude/commands/verify.md`: leer `PROMPT.md`, diff y untracked; aplicar 11 shortcuts y cuatro red flags con revisor frío | quinto pase `{"passes":true,"failures":[]}` |
+
+- `FEATURE_STATUS.json` quedó con parse válido, 0 `completed`, 13
+  funcionalidades de Fase 1 bloqueadas y ADR-0002 a ADR-0004 enlazados.
+- Revisión adversarial fría 1: falló con 5 incoherencias; todas corregidas.
+- Revisión adversarial fría 2: falló con 4 incoherencias; todas corregidas.
+- Revisión adversarial fría 3:
+  `{"passes":true,"failures":[]}`.
+- Revisión adversarial fría 4: falló por contradicción de estado y evidencia sin
+  comandos/códigos; ambos puntos fueron corregidos.
+- Revisión adversarial fría 5:
+  `{"passes":true,"failures":[]}`.
+- `docs/checklists/red-flags.md` referenciado por `/verify` no existe; se usaron
+  los cuatro red flags equivalentes de `broken-window-check` sin modificar
+  LoopKit.
+- Typecheck, lint, tests de aplicación y build: no aplican todavía porque no hay
+  código, stack ni dependencias; continúan bloqueando el cierre de Fase 0.
+- Staging, commit y push realizados: 0.
 
 ## Siguiente paso recomendado — no ejecutar
 
-Realizar una única sesión `phase-0-domain-review` para aprobar vocabulario,
-estados/transiciones, cancelación, numeración visible, precisión/redondeo,
-permisos sensibles y política de operaciones pendientes. No seleccionar stack ni
-implementar código.
+Si la verificación aprueba esta revisión, ejecutar una única sesión
+`phase-0-stack-review` para comparar alternativas técnicas y proponer ADR sin
+instalar dependencias ni iniciar Fase 1.

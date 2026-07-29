@@ -6,6 +6,9 @@ Organización es la frontera de propiedad y aislamiento del MVP. El sistema no
 confía en `organization_id` recibido desde formularios, rutas, mensajes o
 almacenamiento local.
 
+Regla contractual: nunca confiar en `organization_id` aportado por el cliente;
+la organización autorizada siempre se deriva en servidor.
+
 Para cada operación el servidor:
 
 1. autentica la sesión;
@@ -28,22 +31,11 @@ contenido de recursos ajenos.
 
 ## Matriz mínima
 
-| Capacidad | Propietario | Cajero | Cocina |
-|---|---|---|---|
-| Administrar usuarios internos/roles mínimos | permitido | denegado | denegado |
-| Consultar catálogo operativo | permitido | permitido | lectura necesaria |
-| Crear/enviar pedido | permitido | permitido | denegado |
-| Consultar cola de cocina | permitido | lectura operativa | permitido |
-| Cambiar a preparación/listo | permitido si política lo habilita | denegado | permitido |
-| Abrir/cerrar caja | permitido | sujeto a política | denegado |
-| Cobrar | permitido | permitido | denegado |
-| Movimiento manual | permitido | sujeto a política | denegado |
-| Reimprimir cocina | permitido | sujeto a política | sujeto a política |
-| Reimprimir caja | permitido | permitido con motivo | denegado |
-| Configurar agente/impresora | permitido | denegado | denegado |
-| Consultar auditoría | permitido con alcance | denegado | denegado |
-
-Las celdas “sujeto a política” bloquean implementación hasta `phase-0-domain-review`.
+La matriz de acciones aceptada y su semántica permitido/prohibido/autorización
+están en
+[`ROLE_PERMISSION_MATRIX.md`](../domain/ROLE_PERMISSION_MATRIX.md). Una
+autorización de owner es una segunda decisión autenticada para el comando
+concreto, no una contraseña compartida ni una excepción de interfaz.
 
 ## Autenticación y sesiones
 
@@ -78,16 +70,20 @@ Auditar:
 
 - login y fallos relevantes sin registrar credenciales;
 - altas/bajas, membresías, roles y revocación;
-- pedidos cancelados y transiciones excepcionales;
-- apertura/cierre, movimientos, pagos y duplicados rechazados;
+- pedido confirmado, toda transición y todo intento de modificación posterior;
+- cancelación autorizada o rechazada;
+- pago exitoso, fallido y doble pago rechazado;
+- apertura/cierre, ingreso, retiro y diferencia;
 - registro, revocación y configuración de agentes;
-- reintentos manuales, reimpresiones y resultados inciertos;
+- reimpresiones, reintentos manuales y resultados inciertos de impresión;
+- modificación de producto/precio;
+- error de sincronización relevante;
 - accesos cruzados y denegaciones privilegiadas.
 
-El registro contiene actor, identidad de dispositivo si aplica, organización,
-acción, recurso, resultado, correlación, versión y hora servidor. No contiene
-contraseñas, tokens, secretos, datos bancarios, contenido completo innecesario ni
-PII sin finalidad.
+El registro contiene actor, organización, entidad/recurso, acción, resultado,
+fecha del servidor, `correlation_id`, versión e identidad de dispositivo cuando
+aplique, y valores anteriores/nuevos relevantes. No contiene contraseñas, tokens,
+secretos, datos bancarios, contenido completo innecesario ni PII sin finalidad.
 
 ## Secretos
 
@@ -130,7 +126,6 @@ La topología y proveedor están pendientes.
 
 - ADR de autenticación, sesiones y credenciales;
 - ADR de tenancy físico;
-- permisos exactos marcados como política;
 - retención de auditoría y privacidad;
 - mecanismo de secretos y rotación;
 - threat model técnico al seleccionar stack;

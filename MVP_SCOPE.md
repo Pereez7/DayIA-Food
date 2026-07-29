@@ -77,8 +77,8 @@ La separación por organización está incluida. Múltiples sucursales no.
 - estado de pago;
 - usuario que realizó el cobro.
 
-Pago mixto se evaluará durante la especificación de `PAYMENT-001`. No está
-incluido automáticamente.
+Pago mixto tiene estado `excluded-from-mvp` por ADR-0004. Una fase futura deberá
+reabrir explícitamente modelo, caja, reversos, reportes, UX e idempotencia.
 
 ### 7. Impresión básica
 
@@ -136,7 +136,7 @@ Este recorrido es un contrato futuro; todavía no existe implementación.
 - cuentas por cobrar y gestión financiera avanzada;
 - integración bancaria, pasarela online y facturación electrónica;
 - crédito de clientes;
-- pago mixto salvo aprobación posterior.
+- pago mixto (`excluded-from-mvp`).
 
 ### Impresión avanzada
 

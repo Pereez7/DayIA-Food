@@ -125,7 +125,7 @@ alcance no selecciona tecnología ni habilita Fase 1 antes del cierre de Fase 0.
 - registro público, login social, MFA, SSO y permisos configurables;
 - división de cuenta, fidelización y venta multicanal avanzada;
 - contabilidad, banca, pasarela online, facturación electrónica y crédito;
-- pago mixto mientras no exista decisión posterior;
+- pago mixto (`excluded-from-mvp` por ADR-0004);
 - impresión remota, múltiples estaciones y enrutamiento avanzado.
 
 ### Dependencias

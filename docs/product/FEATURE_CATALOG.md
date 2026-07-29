@@ -45,10 +45,12 @@ funcionalidad comienza en `completed`.
 
 `ADR-0001` incorporó `POS-001`, `AUTH-001`, `CASH-001`, `PAYMENT-001`,
 `PRINT-001` y `PRINT-002` a Fase 1. Están `specified`, no `completed`. La
-arquitectura y el stack pendientes impiden implementar Fase 1 hasta cerrar Fase 0.
+Los ADR técnicos, stack y toolchain pendientes impiden implementar Fase 1 hasta
+cerrar Fase 0.
 
-Pago mixto no está incluido en `PAYMENT-001`. Los resúmenes esenciales pertenecen
-a pedido, impresión y caja; no se añade un módulo de analítica al MVP.
+Pago mixto tiene estado explícito `excluded-from-mvp` y no está incluido en
+`PAYMENT-001`. Los resúmenes esenciales pertenecen a pedido, impresión y caja;
+no se añade un módulo de analítica al MVP.
 
 ## Control de cambios
 

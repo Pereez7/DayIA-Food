@@ -6,6 +6,8 @@ Estos flujos fueron aprobados por
 [`ADR-0001`](../decisions/001-flujo-comercial-completo-mvp.md). Describen
 comportamiento observable, no pantallas ni tecnología. Cada uno sigue sujeto al
 cierre de Fase 0 y a especificación verificable antes de implementarse.
+Las decisiones de dominio aceptadas están en `docs/domain/` y ADR-0002 a
+ADR-0004.
 
 ## Matriz
 
@@ -41,12 +43,13 @@ sesión expirada y acceso a otra organización.
 
 ## Apertura de caja
 
-**Precondiciones:** cajero o propietario autenticado y sin sesión incompatible.
+**Precondiciones:** cajero o propietario autenticado y ninguna caja `open` o
+`closing` en la organización.
 
 1. La persona solicita abrir caja.
 2. Registra el monto inicial.
 3. El sistema valida permisos y consistencia.
-4. Crea una sesión de caja abierta y trazable.
+4. Crea el turno organizacional `open`, conservando quién abrió.
 
 **Resultado:** la caja puede recibir movimientos y ventas autorizadas.
 
@@ -55,16 +58,18 @@ solicitud repetida.
 
 ## Punto de venta y creación de pedido
 
-**Precondiciones:** sesión autorizada, caja abierta y catálogo disponible.
+**Precondiciones:** sesión autorizada, caja `open` y catálogo disponible.
 
 1. La persona consulta categorías y productos.
 2. Agrega productos al carrito.
 3. Indica cantidades, observaciones y opciones permitidas.
 4. El sistema presenta subtotal y total.
 5. La persona confirma.
-6. El sistema asigna un número y estado inicial al pedido.
+6. El servidor recalcula en centavos, crea snapshots, asigna ID y número diario
+   organizacional y acepta `confirmed` idempotentemente.
 
-**Resultado:** pedido único, válido, trazable y listo para enviarse a cocina.
+**Resultado:** pedido único, válido, inmutable y visible en cocina aun si está
+`unpaid`.
 
 **Casos obligatorios:** producto no disponible, precio cambiado, cantidad
 inválida, carrito vacío y confirmación repetida.
@@ -91,17 +96,19 @@ precio.
 
 **Precondiciones:** pedido confirmado.
 
-1. Caja envía el pedido a cocina.
-2. El sistema registra una transición única.
-3. La vista de cocina muestra número, productos, opciones y observaciones.
-4. Cocina marca el pedido `en preparación`.
-5. Cocina lo marca `listo`.
-6. El historial mínimo conserva usuario, transición y momento.
+1. La confirmación durable publica el pedido a la proyección de cocina.
+2. La vista muestra número, productos, snapshots, opciones y observaciones.
+3. Cocina marca `in-preparation` contra versión y estado vigentes.
+4. Cocina marca `ready`.
+5. Cashier u owner cobra y, al entregar, marca `completed`.
+6. El historial conserva actor, origen/destino, versión, correlación y hora
+   servidor.
 
 **Resultado:** estado coherente y visible para la operación.
 
-**Casos obligatorios:** doble envío, transición inválida, cambios concurrentes,
-reconexión y pedido inexistente.
+**Casos obligatorios:** repetición de confirmación, transición inválida,
+cancelación concurrente, eventos fuera de orden, reconexión y pedido de otra
+organización.
 
 **Excluido:** estaciones múltiples, prioridad automática, predicción y analítica
 avanzada.
@@ -114,8 +121,9 @@ avanzada.
 2. Selecciona efectivo, QR manual o transferencia.
 3. Para efectivo, registra recibido y obtiene el cambio.
 4. Confirma el cobro.
-5. El sistema registra estado de pago y usuario.
-6. La venta genera el movimiento de caja correspondiente.
+5. El sistema resuelve el intento idempotente y crea como máximo un `Payment`.
+6. Sólo efectivo genera efecto sobre efectivo esperado; los tres métodos quedan
+   asociados a caja, pedido y actor.
 
 **Resultado:** un único cobro básico trazable y consistente con pedido y caja.
 
@@ -123,7 +131,7 @@ avanzada.
 duplicado y usuario sin permiso.
 
 **Excluido:** integración bancaria, pasarela online, facturación electrónica,
-crédito y pago mixto salvo aprobación posterior.
+crédito, reversos/devoluciones y pago mixto (`excluded-from-mvp`).
 
 ## Impresión en cocina
 
@@ -133,7 +141,7 @@ identificable.
 1. El sistema crea una comanda idempotente.
 2. Registra trabajo y estado.
 3. Entrega a la única impresora de cocina.
-4. Muestra éxito o fallo visible.
+4. Muestra `submitted`, fallo o entrega desconocida sin afirmar papel físico.
 5. Permite reimpresión controlada y auditada.
 
 **Resultado:** comanda trazable hasta hardware real sin duplicados silenciosos.
@@ -148,7 +156,7 @@ reintento y confirmación perdida.
 1. El sistema crea un comprobante idempotente.
 2. Registra trabajo y estado.
 3. Entrega a la única impresora de caja.
-4. Muestra éxito o fallo.
+4. Muestra `submitted`, fallo o entrega desconocida.
 5. Permite reimpresión controlada sin repetir el cobro.
 
 **Resultado:** comprobante trazable y desacoplado de la unicidad del cobro.
@@ -160,12 +168,13 @@ enrutamiento avanzado, impresión remota y multi-sucursal.
 
 **Precondiciones:** sesión de caja abierta.
 
-1. Durante la sesión, ventas generan movimientos trazables.
-2. Un usuario autorizado registra ingresos o retiros manuales con motivo.
-3. Al cerrar, registra el monto contado.
-4. El sistema calcula esperado y diferencia.
-5. La persona confirma arqueo y cierre.
-6. La caja cerrada rechaza nuevos movimientos.
+1. Durante el turno compartido, pagos y movimientos conservan su actor.
+2. Owner registra ingresos/retiros; cashier requiere autorización de owner y
+   siempre indica motivo.
+3. Para cerrar, no puede haber pedidos operativos ni intentos pendientes.
+4. Se pasa a `closing`, se congelan movimientos y se registra contado.
+5. El sistema calcula esperado y diferencia; una diferencia no cero exige owner.
+6. Un único comando finaliza `closed`, estado inmutable y no reabrible.
 
 **Resultado:** sesión cerrada con totales, diferencia y responsable trazables.
 

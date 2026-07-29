@@ -19,6 +19,9 @@ versionado semántico cuando exista una primera versión publicable.
 - Registro de deuda técnica y guía para Architecture Decision Records.
 - Contratos lógicos de componentes, pedidos, caja/cobros, impresión,
   conectividad, seguridad y observabilidad.
+- Modelo de dominio canónico con estados, pagos, caja, dinero, numeración,
+  permisos, impresión, invariantes y 25 escenarios adversariales.
+- ADR-0002 a ADR-0004 para ciclo comercial, dinero/numeración y pago/caja.
 
 ### Changed
 
@@ -37,6 +40,13 @@ versionado semántico cuando exista una primera versión publicable.
   Prettier implícitamente.
 - Arquitectura lógica del MVP revisada como `approved-with-actions`, manteniendo
   pendientes stack, ADR técnicos y revisión de dominio.
+- Pedido reducido a cinco estados persistidos, con pago separado y entrega
+  explícita en `completed`.
+- BOB representado conceptualmente en centavos enteros; precios históricos,
+  número diario servidor y caja organizacional quedaron definidos.
+- Pago mixto pasó de evaluación pendiente a `excluded-from-mvp`.
+- Estados de impresión adaptados para no equiparar envío al OS con impresión
+  física.
 
 ### Security
 
@@ -44,5 +54,7 @@ versionado semántico cuando exista una primera versión publicable.
   pueden omitirse para cerrar una funcionalidad, fase o release.
 - Organización definida como frontera de datos y autorización servidor como
   control obligatorio; el contexto recibido del cliente no es confiable.
+- Matriz de roles y auditoría de acciones sensibles definidas con denegación por
+  defecto y autorización secundaria de owner cuando aplica.
 
 No se crea `v1.0.0`: el proyecto continúa en planificación.

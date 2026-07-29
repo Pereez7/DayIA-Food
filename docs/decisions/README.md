@@ -7,9 +7,9 @@ difícil de revertir. Complementan `SYSTEM_ARCHITECTURE.md`: la arquitectura pue
 proponer opciones, pero sólo un ADR aprobado convierte una elección técnica en
 decisión vigente.
 
-La decisión de alcance `ADR-0001` está aceptada. Stack, persistencia, mecanismos
-de autenticación, tiempo real, impresión, offline y tenancy siguen pendientes de
-ADR técnicos separados.
+Las decisiones de alcance y dominio `ADR-0001` a `ADR-0004` están aceptadas.
+Stack, persistencia física, mecanismos de autenticación, tiempo real, agente de
+impresión, offline y tenancy siguen pendientes de ADR técnicos separados.
 
 ## Cuándo crear un ADR
 
@@ -90,3 +90,6 @@ Un ADR rechazado o propuesto no autoriza dependencias ni código.
 | ADR | Título | Estado | Fecha |
 |---|---|---|---|
 | [ADR-0001](001-flujo-comercial-completo-mvp.md) | Incluir el flujo comercial completo en el MVP | accepted | 2026-07-28 |
+| [ADR-0002](002-ciclo-comercial-del-pedido.md) | Ciclo comercial del pedido | accepted | 2026-07-29 |
+| [ADR-0003](003-dinero-precios-y-numeracion.md) | Dinero, precios y numeración visible | accepted | 2026-07-29 |
+| [ADR-0004](004-pago-y-turno-de-caja.md) | Pago único y turno de caja organizacional | accepted | 2026-07-29 |

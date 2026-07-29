@@ -254,16 +254,16 @@ Ningún punto de esta lista se considera aprobado por aparecer en este documento
 | 5 | La impresora está apagada. | El agente informa fallo; el trabajo permanece trazable y reintentable con límite. | No hay salida física hasta intervención. | Definir códigos de error y política de reintentos. |
 | 6 | Sale el ticket, pero no hay confirmación del sistema operativo. | El intento queda `delivery-unknown`; no se reimprime automáticamente. | No puede saberse con certeza que el papel salió. | Definir procedimiento humano ante resultado incierto. |
 | 7 | El agente recibe dos veces el mismo trabajo. | Identificador estable y registro local de trabajos aceptados evitan una segunda ejecución automática. | La durabilidad local depende del agente elegido. | ADR del protocolo y persistencia del agente. |
-| 8 | Se solicita reimprimir. | Nueva solicitud auditada referencia el trabajo original y no ejecuta pedido ni cobro. | Puede producir una copia física adicional, explícitamente marcada. | Definir permisos y motivo obligatorio por tipo. |
-| 9 | Dos usuarios cobran el mismo pedido. | Restricción lógica de un cobro exitoso y transacción condicional; sólo uno gana. | El perdedor debe refrescar y explicar el resultado. | Precisar reversos antes de permitir cancelar un pedido cobrado. |
-| 10 | Dos usuarios cierran la misma caja. | Cambio condicional de `open` a `closed`, versión y un único cierre válido. | Una segunda solicitud sólo recupera el cierre existente. | Definir operaciones pendientes que bloquean cierre. |
-| 11 | El precio cambia después de vender. | Líneas confirmadas conservan nombre, opciones, precio e importes históricos. | La referencia al catálogo puede apuntar a una versión nueva. | Definir precisión y redondeo en revisión de dominio. |
+| 8 | Se solicita reimprimir. | Nueva solicitud auditada referencia el trabajo original y no ejecuta pedido ni cobro. | Puede producir una copia física adicional, explícitamente marcada. | Motivo obligatorio; roles según matriz aceptada. |
+| 9 | Dos usuarios cobran el mismo pedido. | Restricción lógica de un cobro exitoso y transacción condicional; sólo uno gana. | El perdedor debe refrescar y explicar el resultado. | Pedido pagado no se cancela; reversos fuera del MVP. |
+| 10 | Dos usuarios cierran la misma caja. | Cambio condicional `open → closing → closed`, versión y un único cierre válido. | Una segunda solicitud sólo recupera el cierre existente. | Pedidos operativos e intentos `pending` bloquean cierre. |
+| 11 | El precio cambia después de vender. | Líneas confirmadas conservan nombre, opciones, precio e importes históricos. | La referencia al catálogo puede apuntar a una versión nueva. | BOB en centavos enteros; no hay redondeo silencioso. |
 | 12 | El cliente altera `organization_id`. | El servidor deriva organización desde sesión y membresía; ignora/rechaza contexto no autorizado. | Requiere aislamiento aplicado en toda consulta y comando. | ADR técnico de tenancy y pruebas negativas. |
-| 13 | Cocina intenta acceder a caja. | Autorización servidor por acción; rol cocina carece de permisos de caja. | Ocultar controles en UI no es protección. | Definir matriz contractual completa de permisos. |
+| 13 | Cocina intenta acceder a caja. | Autorización servidor por acción; rol cocina carece de permisos de caja. | Ocultar controles en UI no es protección. | Matriz contractual aceptada; pruebas negativas futuras. |
 | 14 | El navegador se recarga durante el cobro. | Consulta del pedido y reintento con la misma clave recuperan pago o estado cobrable. | Una clave perdida exige reconciliar antes de reintentar. | Definir persistencia temporal segura de la intención. |
-| 15 | Se cancela después de enviar a cocina. | Cancelación es transición auditada y notificada; cocina reconcilia la versión. | Cancelar tras preparación causa impacto operativo; tras cobro queda bloqueado. | Regla exacta por estado y política de reverso en revisión de dominio; bloquea implementación. |
+| 15 | Se cancela después de enviar a cocina. | Cancelación es transición auditada y notificada; cocina reconcilia la versión. | Cancelar tras preparación causa impacto operativo; tras cobro queda bloqueado. | Owner o cashier con autorización de owner; motivo; sin reversos en MVP. |
 | 16 | Expira la sesión durante una operación. | Autenticación y autorización se revalidan al aceptar el comando; fallo no produce efecto parcial. | Una operación ya confirmada no se revierte por expiración posterior. | Elegir mecanismo de sesión y renovación. |
-| 17 | El dispositivo tiene hora incorrecta. | Orden, auditoría y vencimientos usan tiempo del servidor; hora cliente es sólo diagnóstico. | Sin sincronización puede confundir al usuario. | Definir presentación de zona horaria y desfase. |
+| 17 | El dispositivo tiene hora incorrecta. | Orden, auditoría y vencimientos usan tiempo del servidor; hora cliente es sólo diagnóstico. | Sin sincronización puede confundir al usuario. | Fecha operativa usa zona configurada de organización; presentación técnica pendiente. |
 | 18 | Llegan eventos fuera de orden. | Cada agregado expone versión monotónica; consumidores ignoran avisos antiguos y reconcilian huecos. | Los avisos no constituyen historial autoritativo. | Elegir formato de versión/cursor y retención. |
 
 ## Veredicto y acciones
@@ -285,8 +285,7 @@ Quedan aprobados:
 
 Acciones que siguen bloqueando implementación:
 
-- revisar vocabulario, estados, cancelación, importes y numeración visible en
-  `phase-0-domain-review`;
+- conservar las reglas aceptadas de dominio en ADR-0002 a ADR-0004;
 - aprobar ADR técnicos de persistencia, autenticación/sesiones, tenancy, tiempo
   real y agente de impresión;
 - seleccionar stack y convertir quality gates en comandos ejecutables;

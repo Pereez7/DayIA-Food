@@ -3,8 +3,13 @@
   "current_phase": "phase-0",
   "phase_status": "in-progress",
   "current_feature": "CORE-001",
-  "next_gate": "phase-0-domain-review",
+  "next_gate": "phase-0-stack-review",
   "scope_decision": "ADR-0001",
+  "domain_decisions": [
+    "ADR-0002",
+    "ADR-0003",
+    "ADR-0004"
+  ],
   "allowed_statuses": [
     "not-started",
     "specified",
