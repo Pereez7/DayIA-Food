@@ -71,8 +71,8 @@ El MVP no contiene refund, void, reverso ni devolución. Por ello, un pedido con
 pago exitoso no puede cancelarse. Una política futura debe definir efectos
 atómicos de pago, caja, auditoría y comprobantes antes de habilitarse.
 
-## Decisiones técnicas pendientes
+## Dirección técnica
 
-Mecanismos físicos PostgreSQL de exclusión, transacción y retención, junto con la
-sesión para autorización secundaria, corresponden a
-`phase-0-data-and-auth-review`. No modifican ADR-0004.
+ADR-0009/0010 fijan índices parciales, locks/versiones, session context y
+autorización secundaria de un solo uso. Falta materializarlos y ejecutar carreras
+reales; no modifican ADR-0004.

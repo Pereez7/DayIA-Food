@@ -1,39 +1,43 @@
-# Contrato de sesión — phase-0-stack-review
+# Contrato de sesión — phase-0-data-and-auth-review
 
 ## Objetivo
 
-Seleccionar y justificar documentalmente el stack inicial de DAYIA FOOD, su
-estrategia de repositorio, despliegue, seguridad, pruebas, rendimiento e
-impresión, sin instalar ni inicializar tecnología.
+Definir documentalmente el diseño físico inicial de datos, autenticación,
+sesiones, tenancy, autorización, RLS, migraciones, transacciones, idempotencia,
+secretos, recuperación y contratos del MVP sin crear SQL ni implementación.
 
 ## Termina cuando
 
-- las alternativas relevantes están comparadas con criterios, riesgos, costo y
-  estado explícito;
-- las decisiones aceptadas tienen ADR y las inciertas quedan `needs-spike`;
-- existen 25 escenarios adversariales con mitigación, limitación y prueba futura;
-- los documentos de arquitectura y calidad son coherentes con el dominio;
-- validadores, enlaces, JSON, diff y revisión adversarial pasan con evidencia
-  fresca;
-- `IMPLEMENTATION_PLAN.md` conserva `STATUS: planning`, Fase 1 continúa bloqueada
-  y ninguna funcionalidad queda `completed`.
+- autoridad, acceso frontend/API y contexto organizacional son inequívocos;
+- tablas, claves, relaciones, constraints, índices, historial y eliminación
+  están descritos conceptualmente;
+- doble pago, doble caja y numeración concurrente tienen protección física;
+- sesión, revocación, cambio de rol y fallos del proveedor tienen resultado;
+- RLS, roles de base de datos y secretos siguen mínimo privilegio;
+- migraciones, backup/restore y OpenAPI poseen estrategia y ADR aceptado;
+- 25 escenarios adversariales incluyen riesgo, protección, constraint,
+  autorización, prueba futura y limitación;
+- JSON, enlaces, skills LoopKit, diff, alcance y revisión adversarial pasan con
+  evidencia fresca;
+- `STATUS: planning`, cero `completed` y Fase 1 bloqueada se conservan.
 
 ## No tocar
 
-- código de producto, manifests, dependencias, componentes, pantallas, SQL,
-  migraciones, CI o infraestructura;
-- reglas de dominio aprobadas o lógica original de LoopKit;
-- staging, commits o remotos Git.
+- código, SQL ejecutable, migraciones, manifests, dependencias, componentes,
+  pantallas, servicios, CI o infraestructura;
+- reglas de dominio aceptadas y lógica original de LoopKit;
+- runtime final del agente Tauri o funcionalidades de fases futuras;
+- staging, commits o remotos.
 
 ## Detenerse si
 
-- la revisión de dominio no está comprometida o el árbol no parte limpio;
-- una decisión incierta se intenta declarar probada sin un spike ejecutable;
-- aparece un cambio ajeno al alcance;
-- un control tendría que debilitarse para obtener un resultado verde.
+- `phase-0-stack-review` no está versionado o el árbol no parte limpio;
+- una decisión contradice ADR-0001 a ADR-0008;
+- una protección depende sólo del frontend o de una RLS no verificable;
+- aparece un cambio ajeno al alcance o habría que debilitar un control.
 
 ## Ruta de verificación
 
-Validación documental reproducible sobre el diff, parseo del ledger, resolución
-de enlaces Markdown, revisión de ADR y matrices, búsqueda de artefactos técnicos
-y secretos, validadores LoopKit y revisión adversarial independiente.
+Parseo de ledger, resolución de enlaces, validación estructural de modelo/ADR y
+25 escenarios, búsqueda de secretos y artefactos prohibidos, validadores
+LoopKit, `git diff --check` y revisión adversarial fría contra este contrato.

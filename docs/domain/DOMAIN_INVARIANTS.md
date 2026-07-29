@@ -20,6 +20,19 @@
 15. Reimpresión es explícita, motivada y auditada.
 16. Toda acción sensible y todo rechazo material dejan auditoría sin secretos.
 
+## Garantías físicas aprobadas
+
+- organización en cada fila de negocio y foreign keys compuestas;
+- RLS default deny/FORCE además de policies Fastify;
+- unique payment por pedido e índice parcial de intento `succeeded`;
+- índice parcial de una caja `open|closing` por organización;
+- unique organización+fecha operativa+número, con contador bloqueado;
+- versiones, history/audit append-only y snapshots inmutables;
+- idempotency común más uniques específicos.
+
+El detalle está en
+[`PHYSICAL_DATA_MODEL.md`](../data/PHYSICAL_DATA_MODEL.md); todavía no existe SQL.
+
 ## 25 escenarios de refutación
 
 | # | Escenario y regla | Resultado esperado | Autorización | Auditoría | Prueba futura | Pendiente |
@@ -41,9 +54,9 @@
 | 15 | Modificador se elimina tras venta | Venta e impresión históricas lo conservan | owner modifica catálogo | modificación catálogo | integración histórica | ninguna |
 | 16 | Tres reimpresiones | Tres jobs separados, contador 3, motivo/actor por job | roles permitidos | tres reimpresiones | integración de cola | ninguna |
 | 17 | Cocina marca listo un cancelado | Rechazo sin cambiar proyección | kitchen/owner no pueden por estado | transición rechazada | transición negativa | ninguna |
-| 18 | Eventos fuera de orden | Proyección ignora versión vieja y reconcilia autoridad | actor del comando original | anomalía de sincronización | contrato/reconexión | mecanismo técnico en stack-review |
+| 18 | Eventos fuera de orden | Proyección ignora versión vieja y reconcilia autoridad | actor del comando original | anomalía de sincronización | contrato/reconexión | Broadcast privado/outbox aún por implementar |
 | 19 | Hora de dispositivo incorrecta | Número, fecha y auditoría usan servidor | no aplica | hora servidor | prueba con reloj cliente alterado | zona horaria operativa a configurar |
-| 20 | Rol cambia durante sesión | Siguiente comando usa rol vigente y puede rechazar | membresía vigente | cambio de rol + rechazo | seguridad/integración | mecanismo de sesión en ADR técnico |
+| 20 | Rol cambia durante sesión | Siguiente comando usa rol vigente y puede rechazar | membresía vigente | cambio de rol + rechazo | seguridad/integración | ADR-0010; falta implementación |
 | 21 | Pedido de otra organización | Rechazo sin revelar existencia | ningún rol cruzado | acceso denegado sanitizado | IDOR/integración | ninguna |
 | 22 | Importe con precisión extra | Entrada rechazada; no redondea ni persiste | no aplica | validación rechazada si sensible | límites/contract test | ninguna |
 | 23 | Descuento da total negativo | Campo/acción no admitido; rechazo | nadie | validación rechazada | contrato + regla | ninguna |

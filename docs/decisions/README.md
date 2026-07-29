@@ -7,10 +7,9 @@ difícil de revertir. Complementan `SYSTEM_ARCHITECTURE.md`: la arquitectura pue
 proponer opciones, pero sólo un ADR aprobado convierte una elección técnica en
 decisión vigente.
 
-Las decisiones de alcance y dominio `ADR-0001` a `ADR-0004` y las direcciones de
-stack `ADR-0005` a `ADR-0007` están aceptadas. El runtime del agente en
-`ADR-0008` sigue propuesto y condicionado a spike. Persistencia física, sesión,
-offline y tenancy detallado conservan gates propios.
+Las decisiones `ADR-0001` a `ADR-0007` y `ADR-0009` a `ADR-0012` están
+aceptadas. El runtime del agente en `ADR-0008` sigue propuesto y condicionado a
+spike. Offline-first y multi-sucursal conservan gates futuros.
 
 ## Cuándo crear un ADR
 
@@ -98,3 +97,7 @@ Un ADR rechazado o propuesto no autoriza dependencias ni código.
 | [ADR-0006](006-plataforma-backend-datos-y-auth.md) | Plataforma backend, datos y autenticación | accepted | 2026-07-29 |
 | [ADR-0007](007-monorepo-y-toolchain.md) | Monorepo y toolchain de calidad | accepted | 2026-07-29 |
 | [ADR-0008](008-direccion-del-agente-de-impresion.md) | Dirección del agente local de impresión | proposed | 2026-07-29 |
+| [ADR-0009](009-modelo-fisico-tenancy-y-rls.md) | Modelo físico, tenancy y RLS | accepted | 2026-07-29 |
+| [ADR-0010](010-auth-sesiones-y-autorizacion.md) | Autenticación, sesiones y autorización | accepted | 2026-07-29 |
+| [ADR-0011](011-migraciones-y-recuperacion.md) | Migraciones y recuperación | accepted | 2026-07-29 |
+| [ADR-0012](012-autoridad-del-contrato-openapi.md) | Autoridad del contrato OpenAPI | accepted | 2026-07-29 |

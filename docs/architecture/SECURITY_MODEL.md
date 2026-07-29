@@ -44,17 +44,15 @@ email/contraseña y alta administrativa: no hay registro público, OAuth social 
 MFA hasta otra fase. La API Fastify valida la sesión y vuelve a resolver
 membresía/rol; un claim o estado React nunca es autoridad.
 
-Requisitos:
+ADR-0010 fija PKCE, verificación JWT asimétrica/JWKS, access token objetivo de una
+hora, contexto aplicativo máximo de 12 horas/2 horas inactivo y sesión SPA en
+`sessionStorage`. `sub`, tiempos y `session_id` identifican; organización y rol se
+consultan en DB en cada request.
 
-- credenciales protegidas con mecanismo aprobado posteriormente;
-- sesión con expiración, revocación y rotación cuando corresponda;
-- cierre de sesión invalida uso posterior;
-- reautenticación o nueva sesión después de expiración;
-- autorización revalidada al aceptar cada comando sensible;
-- agentes usan identidad de dispositivo distinta de usuarios humanos.
-
-No se eligen proveedor, token, cookie, almacenamiento de contraseña ni duración
-en esta revisión; requieren ADR técnico y threat model específico.
+Logout/desactivación/rol revocan `session_contexts` inmediatamente y solicitan
+revocación Auth. Un token aún firmado no autoriza si profile, contexto,
+membership u organization están inactivos. Detalle:
+[`AUTHENTICATION_AND_SESSIONS.md`](../security/AUTHENTICATION_AND_SESSIONS.md).
 
 ## Autorización
 
@@ -68,6 +66,11 @@ en esta revisión; requieren ADR técnico y threat model específico.
 
 Las pruebas deben intercambiar identificadores entre dos organizaciones y entre
 roles, verificando denegación sin efecto lateral.
+
+El pipeline y permisos técnicos están en
+[`AUTHORIZATION.md`](../security/AUTHORIZATION.md). El frontend no posee CRUD de
+negocio y `organization_id` se aplica mediante contexto servidor, claves
+compuestas y RLS.
 
 ## Operaciones sensibles y auditoría
 
@@ -124,7 +127,7 @@ concreto sigue pendiente.
 | Elevación de rol desde UI | política servidor y denegación por defecto |
 | Manipulación de precio/total | recálculo servidor e instantánea confirmada |
 | Repetición de comandos | idempotencia, huella y unicidad |
-| Robo/reuso de sesión | expiración, revocación y mecanismo seguro pendiente |
+| Robo/reuso de sesión | expiración + session context revocable + cleanup SPA |
 | Suscripción a eventos ajenos | autorización de canal y avisos mínimos |
 | Agente suplantado | registro, credencial por dispositivo y revocación |
 | Secretos en logs | allowlist de campos y redacción |
@@ -139,15 +142,18 @@ concreto sigue pendiente.
 - cabeceras, CORS allowlist, límites de cuerpo/rate y errores sin detalle sensible;
 - logs allowlist con `correlation_id`, sin tokens ni payloads completos;
 - credencial única, rotatoria, revocable y de alcance mínimo por agente.
+- rol `dayia_api` no-owner sujeto a `FORCE RLS`; service role aislada;
+- canales Realtime privados y policies sobre topics de memberships activas;
+- inventario/rotación por ambiente en
+  [`SECRETS_MANAGEMENT.md`](../security/SECRETS_MANAGEMENT.md).
 
 ## Decisiones y pruebas pendientes
 
-- transporte/almacenamiento de sesión, renovación, revocación y recuperación;
-- políticas RLS y tenancy físico;
+- ejecutar sesión, renovación, revocación, cambio de rol y key rotation;
+- materializar y probar RLS/grants/tenancy;
 - retención de auditoría y privacidad;
 - proveedor de secretos y procedimiento de rotación;
 - rate limits, CORS y cabeceras exactos;
 - pruebas de sesión, IDOR, rol, dispositivo, suscripción y redacción.
 
-Estas decisiones se resuelven en `phase-0-data-and-auth-review`; ninguna ausencia
-se interpreta como control aprobado.
+Las decisiones documentales están aprobadas; ninguna se considera implementada.

@@ -3,7 +3,7 @@
   "current_phase": "phase-0",
   "phase_status": "in-progress",
   "current_feature": "CORE-001",
-  "next_gate": "phase-0-data-and-auth-review",
+  "next_gate": "phase-0-printing-spike-plan",
   "scope_decision": "ADR-0001",
   "domain_decisions": [
     "ADR-0002",
@@ -14,7 +14,11 @@
     "ADR-0005",
     "ADR-0006",
     "ADR-0007",
-    "ADR-0008"
+    "ADR-0008",
+    "ADR-0009",
+    "ADR-0010",
+    "ADR-0011",
+    "ADR-0012"
   ],
   "proposed_decisions": [
     "ADR-0008"
@@ -64,7 +68,7 @@
         "CORE-001"
       ],
       "blockers": [
-        "phase-0 data and auth review pending",
+        "physical schema, RLS, auth and migrations not implemented",
         "print-agent spike pending",
         "quality commands selected but not configured"
       ]
@@ -253,7 +257,7 @@
       ],
       "blockers": [
         "phase-0 not completed",
-        "phase-0 data and auth review pending"
+        "auth and session design not implemented or verified"
       ]
     },
     {

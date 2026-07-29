@@ -142,6 +142,17 @@ Probar:
 El caso negativo es obligatorio; demostrar acceso permitido no prueba
 autorización.
 
+### Matriz data/auth obligatoria
+
+- JWT: firma, issuer, audience, expiry, skew, `kid`/rotation y token malformado;
+- sesión: refresh, logout local/global, revocación aplicativa y provider outage;
+- profile, membership, role u organización desactivados durante sesión;
+- cada handler × owner/cashier/kitchen × allow/deny × dos organizaciones;
+- RLS/grants por `anon`, `authenticated`, `dayia_api`, owner y service role;
+- FK compuestas, `WITH CHECK` y canales Realtime privados;
+- service key ausente del bundle y logs;
+- autorización secundaria ausente/expirada/usada/payload distinto.
+
 ## Pruebas de caja y cobro
 
 Cubrir:
@@ -157,6 +168,19 @@ Cubrir:
 
 Pago mixto no se prueba como capacidad incluida: ADR-0004 lo dejó
 `excluded-from-mvp`.
+
+## Pruebas físicas PostgreSQL
+
+- pgTAP para constraints, RLS, grants, inmutabilidad y transiciones;
+- carreras reales para número diario, confirmar, pago, caja y cierre;
+- idempotencia igual/diferente payload y respuesta perdida;
+- outbox/audit obligatorios dentro de la transacción;
+- overflow, importes negativos, precisión extra y snapshots inconsistentes;
+- `EXPLAIN` para índices tenant-first con volumen representativo;
+- migración desde cero y desde snapshot de versión anterior;
+- restore aislado con smoke, RLS y reconciliación.
+
+Mocks no prueban unique indexes, locks, RLS ni restore.
 
 ## Regresión
 

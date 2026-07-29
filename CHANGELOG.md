@@ -27,6 +27,11 @@ versionado semántico cuando exista una primera versión publicable.
   monorepo/toolchain.
 - ADR-0008 propuesto y gate de spike para el agente local de impresión.
 - Veinticinco escenarios adversariales del stack.
+- Modelo físico conceptual de datos, tenancy/RLS, transacciones, idempotencia,
+  migraciones, backup/restore, Auth/sesiones, autorización, secretos y contratos.
+- ADR-0009 a ADR-0012 para datos/tenancy, auth, migraciones/recuperación y
+  autoridad OpenAPI.
+- Veinticinco escenarios adversariales específicos de datos y autenticación.
 
 ### Changed
 
@@ -58,6 +63,12 @@ versionado semántico cuando exista una primera versión publicable.
   como contratos futuros sin declarar herramientas instaladas.
 - Siguiente gate cambiado a `phase-0-data-and-auth-review`; Fase 1 sigue
   bloqueada.
+- Frontend limitado a Supabase Auth/Realtime privado; Fastify es la única vía
+  comercial y deriva organización/rol desde DB.
+- Migraciones fijadas a Supabase CLI SQL forward-only/expand-contract, con PITR
+  previo al piloto y restore obligatorio.
+- Siguiente gate cambiado a `phase-0-printing-spike-plan`; Fase 1 continúa
+  bloqueada.
 
 ### Security
 
@@ -70,5 +81,8 @@ versionado semántico cuando exista una primera versión publicable.
 - API autoritativa, RLS en profundidad, SQL parametrizado, escaneo futuro de
   secretos/dependencias y credenciales por dispositivo establecidos como
   controles del stack.
+- JWT asimétrico/JWKS, revocación aplicativa, FK tenant compuestas, RLS
+  default-deny/FORCE, service role aislada y secrets por ambiente definidos como
+  controles obligatorios.
 
 No se crea `v1.0.0`: el proyecto continúa en planificación.

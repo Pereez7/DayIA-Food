@@ -62,9 +62,13 @@ La API Fastify es la autoridad de comandos y consultas. El navegador nunca
 escribe directamente tablas ni decide organización, rol, precio, total, estado o
 idempotencia.
 
-Supabase aporta PostgreSQL administrado, Auth y Realtime. La API valida la sesión,
-resuelve membresía activa, ejecuta casos de uso y persiste en transacciones. RLS
-es defensa en profundidad, no sustituto de autorización de casos de uso.
+Supabase aporta PostgreSQL administrado, Auth y Realtime. Fastify valida JWT
+asimétrico con JWKS, pero consulta profile, session context y membership para
+cada autorización. RLS es defensa en profundidad, no sustituto de autorización.
+
+El frontend no tiene CRUD directo de negocio: el cliente Supabase se limita a
+Auth y Realtime privado. Fastify/`pg` usa un rol DB no-owner sujeto a RLS; service
+role queda aislada a Auth Admin.
 
 El acceso usa SQL parametrizado mediante `pg` detrás de repositorios. Dinero se
 persiste en unidades menores enteras; restricciones, índices únicos y
@@ -78,9 +82,9 @@ polling y reconciliación; un evento nunca reemplaza el estado persistido.
 ## Contratos y portabilidad
 
 `packages/contracts` será la fuente TypeScript de esquemas Zod para límites
-web/API. OpenAPI se generará de esos contratos para el agente y pruebas; no se
-mantendrán dos descripciones manuales. Los tipos compilados no sustituyen
-validación runtime.
+web/API. OpenAPI, schemas Fastify y cliente se generarán de esos contratos para
+agente/pruebas; no se mantendrán descripciones manuales paralelas. Los tipos
+compilados no sustituyen validación runtime.
 
 El dominio puro no importará React, Fastify, Supabase ni Tauri. Adaptadores,
 repositorios y contratos limitan lock-in. Exportaciones y restauración
@@ -107,25 +111,25 @@ dependencias y deben permanecer `blocked` hasta su inicialización explícita.
 
 ## Escenarios adversariales
 
-| # | Riesgo | Capacidad del stack | Mitigación | Limitación | Prueba futura | Decisión pendiente |
+| # | Riesgo | Capacidad del stack | Mitigación | Limitación | Prueba futura | Decisión/evidencia pendiente |
 |---:|---|---|---|---|---|---|
-| 1 | Doble confirmación de pedido | transacción + unique key | idempotency key y fingerprint | diseño físico pendiente | integración concurrente | índice exacto |
+| 1 | Doble confirmación de pedido | transacción + unique key | record/hash + uniques dominio | aún sin SQL | integración concurrente | materializar ADR-0009 |
 | 2 | Respuesta perdida tras confirmar | API consultable | repetir misma clave y reconciliar | red puede ocultar resultado temporal | fault injection | TTL de claves |
-| 3 | Dos cobros simultáneos | PostgreSQL serializa/condiciona | unique pago exitoso + lock | nivel de aislamiento pendiente | carrera real | SQL/aislamiento |
-| 4 | Caja abierta dos veces | constraint transaccional | unicidad parcial por organización | schema pendiente | dos sesiones paralelas | índice exacto |
-| 5 | Cierre con cobro en vuelo | transacción y estado | transición `closing` + rechazo/espera | política temporal pendiente | carrera cierre/cobro | timeout |
-| 6 | Precio manipulado en navegador | API autoritativa | recalcular y snapshot servidor | catálogo físico pendiente | contract/integration negativo | modelo de precio |
-| 7 | `organization_id` ajeno | Auth + lookup + RLS | derivar membresía, negar por defecto | políticas no escritas | IDOR/RLS pgTAP | claims/sesión |
-| 8 | Rol cliente adulterado | backend resuelve rol | no confiar claims de UI | cache de membresía por decidir | permisos negativos | estrategia cache |
-| 9 | JWT robado | Auth soporta expiración | TLS, rotación, revocación, no logs | almacenamiento web pendiente | robo/revocación E2E | cookie/token |
-| 10 | Signup público accidental | Auth configurable | sólo alta administrativa | flujo exacto pendiente | configuración automatizada | invitación/reset |
+| 3 | Dos cobros simultáneos | PostgreSQL serializa/condiciona | payment unique + partial succeeded + lock | aún sin SQL | carrera real | materializar/probar |
+| 4 | Caja abierta dos veces | constraint transaccional | índice parcial open/closing | aún sin SQL | dos sesiones paralelas | materializar/probar |
+| 5 | Cierre con cobro en vuelo | transacción y estado | lock/version + `closing` | timeout por medir | carrera cierre/cobro | baseline |
+| 6 | Precio manipulado en navegador | API autoritativa | recalcular + constraints/snapshot | aún sin SQL | contract/integration negativo | materializar |
+| 7 | `organization_id` ajeno | Auth + lookup + RLS | session context, FK compuestas y RLS | aún sin policies | IDOR/RLS pgTAP | materializar |
+| 8 | Rol cliente adulterado | backend resuelve rol | membership consultada por request | costo sin medir | permisos negativos | benchmark |
+| 9 | JWT robado | Auth + app revocation | sessionStorage, expiry, session context | XSS aún expone token | robo/revocación E2E | CSP/toolchain |
+| 10 | Signup público accidental | Auth configurable | invitation durable, sin signup | integración no creada | configuración automatizada | materializar |
 | 11 | Secreto Supabase en bundle | separación web/API | sólo clave pública en web; service key servidor | scanner aún no instalado | build + secret scan | vault/proveedor |
-| 12 | Evento realtime ajeno | canales/RLS | autorizar suscripción y payload mínimo | semántica exacta pendiente | suscripción cruzada | broadcast/change |
+| 12 | Evento realtime ajeno | canales/RLS | Broadcast privado + membership/topic | policies no creadas | suscripción cruzada | materializar |
 | 13 | Evento perdido/desordenado | versión + refetch | invalidar, polling y comparar versión | latencia degradada | desconexión/reorden | intervalos |
 | 14 | Realtime duplicado | cliente idempotente | avisos sin efectos de negocio | consumo extra | replay de eventos | dedupe window |
 | 15 | SQL injection | `pg` parametrizado | no concatenar entrada, allowlists | revisión de queries requerida | payloads maliciosos | query builder no |
-| 16 | Migración rompe rollback | SQL versionado | expand/contract y backup probado | no hay pipeline aún | upgrade/downgrade ensayo | política DDL |
-| 17 | Restore incompleto | backups administrados | simulacro y RPO/RTO | plan PITR depende de costo | restauración staging | plan Supabase |
+| 16 | Migración rompe rollback | SQL versionado | Supabase CLI + expand/contract | no hay pipeline aún | upgrade/restore ensayo | materializar ADR-0011 |
+| 17 | Restore incompleto | backups administrados | PITR requerido + simulacro | plan/costo sin contratar | restauración staging | validar RPO/RTO |
 | 18 | Proveedor cae | capas portables | artefactos, export DB, runbook | Auth/Realtime tienen lock-in | ejercicio continuidad | proveedor/región |
 | 19 | Bundle crece | Vite analiza artefacto | budgets y carga diferida | baseline inexistente | build medido | límite final |
 | 20 | API saturada en hora pico | Fastify + métricas | límites, pool y backpressure | carga desconocida | prueba p95 concurrente | tamaño/pool |

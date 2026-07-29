@@ -2,13 +2,12 @@
 
 > **Estado de revisión: approved-with-actions — 2026-07-29.**
 >
-> Este documento no decide tecnologías, proveedores ni dependencias y no autoriza
+> Este documento integra decisiones lógicas y técnicas, pero no autoriza
 > implementación. Toda decisión difícil de revertir requiere un ADR según
 > [`docs/decisions/README.md`](../decisions/README.md).
 
-La revisión aprueba las fronteras, fuentes de verdad y garantías lógicas
-descritas aquí. Las acciones pendientes al final del documento bloquean la
-selección de stack y el inicio de Fase 1.
+La revisión aprueba fronteras, fuentes de verdad y garantías lógicas/técnicas.
+Las acciones pendientes al final bloquean el inicio de Fase 1.
 
 ## Objetivos arquitectónicos
 
@@ -60,8 +59,8 @@ productos concretos.
 - [`OBSERVABILITY.md`](OBSERVABILITY.md): auditoría, correlación, eventos y
   errores rastreables.
 
-Estos documentos son contratos lógicos coordinados. Ninguno selecciona procesos,
-productos, protocolos, motor de datos ni topología de despliegue.
+Estos documentos son contratos coordinados; ADR-0005 a ADR-0012 seleccionan la
+dirección técnica sin crear implementación.
 
 ## Fuentes de verdad
 
@@ -83,12 +82,8 @@ Responsable de presentar capacidades autorizadas, capturar intención del usuari
 y mostrar resultados y fallos sin duplicar reglas del dominio. Debe contemplar
 estados de carga, vacío, error y operación degradada cuando corresponda.
 
-Pendiente de decisión:
-
-- modelo de entrega y ejecución;
-- límites entre estado local y estado confirmado;
-- estrategia de accesibilidad y compatibilidad de dispositivos;
-- alcance real de operación sin internet.
+React/Vite entrega la SPA; límites de estado están en ADR-0005. Accesibilidad,
+dispositivos y operación sin internet todavía requieren evidencia.
 
 ## Backend
 
@@ -122,13 +117,13 @@ Reglas propuestas:
 
 Debe preservar consistencia, trazabilidad y aislamiento. El diseño conceptual se
 encuentra en [`DATABASE_DESIGN.md`](DATABASE_DESIGN.md). PostgreSQL administrado
-por Supabase es el motor aceptado; modelo físico, tipos, índices, RLS y estrategia
-de migración corresponden al siguiente gate.
+por Supabase y ADR-0009/0011 fijan modelo físico, índices, RLS y migraciones;
+siguen sin materializarse.
 
 ## Actualización en tiempo real
 
-Se propone una capacidad para propagar cambios operativos, especialmente estados
-de pedido, sin convertir la entrega en tiempo real en la fuente de verdad.
+Supabase Realtime Broadcast en canales privados propagará avisos operativos sin
+convertir la entrega en fuente de verdad.
 
 Debe contemplar:
 
@@ -138,7 +133,9 @@ Debe contemplar:
 - degradación a actualización explícita si el canal no está disponible;
 - métricas de demora y fallos.
 
-El mecanismo concreto no está decidido.
+La autorización conceptual está en
+[`TENANCY_AND_RLS.md`](../data/TENANCY_AND_RLS.md); formato/worker se materializan
+después.
 
 ## Impresión y agente local
 
@@ -171,7 +168,8 @@ Límites conceptuales a preservar:
 - el MVP debe probar accesos cruzados negativos;
 - la evolución hacia múltiples sucursales requiere una decisión posterior.
 
-La forma física del aislamiento organizativo queda pendiente de ADR.
+ADR-0009 fija `organization_id`, claves compuestas y RLS; falta ejecutarlos y
+probarlos.
 
 ## Funcionamiento degradado sin internet
 
@@ -202,7 +200,7 @@ Los proveedores y la retención están pendientes.
 
 ## Seguridad
 
-Controles mínimos a decidir y verificar:
+Controles mínimos decididos y aún por ejecutar/verificar:
 
 - autenticación de usuarios internos e invalidación de sesión;
 - roles iniciales propietario, cajero y cocina;
@@ -233,13 +231,13 @@ Toda evolución debe mantener:
 
 ## Decisiones pendientes
 
-- modelo físico PostgreSQL, transacciones, RLS y migraciones;
-- detalle de sesión, revocación y aplicación física de permisos;
-- publicación durable y autorización exacta de Realtime;
+- materializar/probar schema, constraints, RLS, migraciones y contratos;
+- adapter Zod↔OpenAPI/Fastify concreto;
+- worker outbox y payload/topic final de Realtime;
 - estrategia de operación degradada;
 - runtime/protocolo/distribución del agente tras spike;
 - proveedor/región, retención, alertas y gestor de secretos;
-- aislamiento físico por organización;
+- validación legal/fiscal local de retención;
 - estrategia futura de múltiples sucursales.
 
 Ningún punto de esta lista se considera aprobado por aparecer en este documento.
@@ -284,11 +282,10 @@ Quedan aprobados:
 - aislamiento por organización y autorización obligatoria del lado servidor;
 - observabilidad correlacionada sin datos sensibles innecesarios.
 
-Acciones que siguen bloqueando implementación:
+Acciones que siguen bloqueando Fase 1:
 
 - conservar las reglas aceptadas de dominio en ADR-0002 a ADR-0004;
-- aprobar ADR técnicos de persistencia, autenticación/sesiones, tenancy, tiempo
-  real y agente de impresión;
-- seleccionar stack y convertir quality gates en comandos ejecutables;
+- materializar/probar ADR-0009 a ADR-0012;
+- convertir quality gates en comandos ejecutables;
 - validar impresión, reconexión y certeza limitada con hardware real en la fase
   correspondiente.

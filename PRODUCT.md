@@ -82,6 +82,7 @@ y agente local de impresión separado. La selección detallada y sus límites es
 en [`TECHNOLOGY_STACK.md`](docs/architecture/TECHNOLOGY_STACK.md) y ADR-0005 a
 ADR-0008.
 
-Siguen pendientes de evidencia el runtime final del agente, el modelo físico y
-RLS, el ciclo exacto de sesión y el proveedor concreto de despliegue. No existe
-todavía diseño visual ni autorización para inicializar la aplicación.
+ADR-0009 a ADR-0012 fijan el modelo físico conceptual, tenancy/RLS, sesiones,
+migraciones/recuperación y contrato API. Siguen pendientes su implementación y
+evidencia, el runtime final del agente y el proveedor concreto. No existe todavía
+diseño visual ni autorización para inicializar la aplicación.

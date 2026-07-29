@@ -2,8 +2,8 @@
 
 ## Estado y alcance
 
-Contrato lógico revisado el 2026-07-29. Define responsabilidades del MVP sin
-decidir procesos desplegables, productos, frameworks o dependencias.
+Contrato lógico/físico revisado el 2026-07-29. Las tecnologías aprobadas se
+mantienen detrás de estas responsabilidades.
 
 ## Componentes
 
@@ -37,6 +37,10 @@ El frontend puede:
 - calcular una estimación de subtotal/total para respuesta inmediata;
 - conservar intención pendiente hasta conocer el resultado;
 - mostrar eventos en tiempo real y solicitar reconciliación.
+
+El frontend usa Supabase directamente sólo para Auth y canales Realtime
+privados. No posee grants CRUD sobre datos comerciales ni llama tablas/vistas de
+negocio.
 
 El servidor debe:
 
@@ -117,3 +121,7 @@ transiciones: no se simula éxito local.
 
 Cada contrato tendrá una única definición versionada y pruebas de productor y
 consumidor cuando exista implementación.
+
+La estrategia concreta está en
+[`API_CONTRACT_STRATEGY.md`](../contracts/API_CONTRACT_STRATEGY.md): Zod es
+fuente runtime y OpenAPI/cliente se generan.

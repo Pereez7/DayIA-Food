@@ -96,9 +96,25 @@ de hipótesis transitorias.
 - 2026-07-29: despliegue separa web estática, API contenedorizada, Supabase y
   agente local; el proveedor concreto requiere comparación de región, costo,
   rollback y restore.
+- 2026-07-29: ADR-0009 aceptó UUID, bigint en centavos, `organization_id` en
+  filas de negocio, FK compuestas, índices parciales y RLS default deny/FORCE.
+  El frontend no tiene CRUD comercial directo.
+- 2026-07-29: ADR-0010 aceptó Auth email/password+PKCE, JWT asimétrico validado
+  por JWKS y autorización DB viva por profile/session context/membership en cada
+  request. Rol/organización de token o frontend no son autoridad.
+- 2026-07-29: session context objetivo máximo 12 horas/2 horas inactivo; access
+  token objetivo 1 hora. Logout, desactivación y cambio de rol revocan el
+  contexto API aunque el JWT siga firmado hasta expirar.
+- 2026-07-29: pago único, caja activa única y número diario se protegen con
+  constraints/índices/locks además de Fastify; auditoría y outbox son parte de
+  transacciones sensibles.
+- 2026-07-29: ADR-0011 aceptó migraciones SQL por Supabase CLI, forward-only y
+  expand/contract. PITR es requisito previo al piloto; objetivos RPO 15 minutos y
+  RTO 4 horas requieren simulacro.
+- 2026-07-29: ADR-0012 aceptó Zod como fuente runtime, con Fastify/OpenAPI/cliente
+  generados y compatibilidad versionada.
 
 ## Próximo paso
 
-Ejecutar `phase-0-data-and-auth-review` para definir schema PostgreSQL,
-migraciones, RLS, sesión, secretos y pruebas de aislamiento, sin inicializar la
-aplicación.
+Ejecutar `phase-0-printing-spike-plan` sin desarrollar el agente ni inicializar
+la aplicación.

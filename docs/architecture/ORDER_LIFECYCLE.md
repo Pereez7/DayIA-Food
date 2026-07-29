@@ -61,9 +61,8 @@ ID técnico, idempotencia y número visible siguen
 [`NUMBERING.md`](../domain/NUMBERING.md). Hora y secuencia son de servidor; un
 pedido cancelado conserva su número y los huecos son válidos.
 
-## Decisiones técnicas pendientes
+## Dirección técnica
 
-Persisten para `phase-0-data-and-auth-review`: SQL/aislamiento exactos,
-versionado, retención de idempotencia, publicación durable y políticas de
-Realtime. ADR-0006 ya fijó PostgreSQL y avisos que fuerzan refetch; estos detalles
-no alteran ADR-0002 y ADR-0003.
+ADR-0009 fija versión, contador bloqueado, idempotencia y outbox; ADR-0006 fija
+avisos que fuerzan refetch. Falta materializar SQL y probar concurrencia/Realtime;
+no se alteran ADR-0002 y ADR-0003.

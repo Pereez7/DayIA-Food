@@ -1,9 +1,25 @@
-# Diseño conceptual y autoridad de datos
+# Diseño y autoridad de datos
 
-> **Estado lógico y de dominio: revisado — 2026-07-29.**
+> **Estado lógico, dominio y dirección física: revisado — 2026-07-29.**
 >
-> No es un esquema físico. No define motor, tablas, columnas, tipos, claves,
-> índices, restricciones concretas ni migraciones.
+> Este documento conserva el modelo conceptual. La propuesta física sin SQL está
+> en [`PHYSICAL_DATA_MODEL.md`](../data/PHYSICAL_DATA_MODEL.md).
+
+## Dirección física aprobada
+
+- PostgreSQL/Supabase con UUID, `timestamptz`, bigint en centavos y versiones;
+- `organization_id` en toda tabla de negocio, foreign keys compuestas e índices
+  tenant-first;
+- Fastify/`pg` como vía comercial; frontend sin CRUD directo;
+- índices únicos parciales para pago exitoso y caja activa;
+- contador diario bloqueado para numeración;
+- RLS default deny/FORCE como defensa adicional;
+- migraciones SQL por Supabase CLI, forward-only y expand/contract.
+
+Detalles: [`TENANCY_AND_RLS.md`](../data/TENANCY_AND_RLS.md),
+[`TRANSACTION_BOUNDARIES.md`](../data/TRANSACTION_BOUNDARIES.md),
+[`IDEMPOTENCY.md`](../data/IDEMPOTENCY.md) y
+[`MIGRATION_STRATEGY.md`](../data/MIGRATION_STRATEGY.md).
 
 ## Principios
 
@@ -96,8 +112,8 @@ Relaciones conceptuales:
 
 ## Dominios del flujo comercial aprobado
 
-Estos conceptos pertenecen al MVP por `ADR-0001`. Su representación física sigue
-pendiente.
+Estos conceptos pertenecen al MVP por `ADR-0001`; ADR-0009 define su dirección
+física.
 
 ### Identidad y permisos
 
@@ -106,8 +122,8 @@ pendiente.
 - **Asignación de acceso:** relación entre identidad, contexto y permisos.
 - **Sesión:** autenticación vigente y revocable.
 
-`AUTH-001` está aprobado en alcance. El mecanismo de autenticación, almacenamiento
-de credenciales y sesiones requiere ADR técnico.
+`AUTH-001` está aprobado en alcance. Supabase Auth y `session_contexts` siguen
+ADR-0010; credenciales y sesiones no viven en estas entidades de dominio.
 
 ### Caja y cobro
 
@@ -145,7 +161,8 @@ Relaciones conceptuales:
 - una reimpresión queda diferenciada y auditada;
 - los intentos no duplican el cobro ni ocultan fallos.
 
-No se decide formato, protocolo, retención, agente ni estructura física.
+La estructura física queda preparada; runtime/protocolo y retención final siguen
+al spike de impresión.
 
 ## Matriz de autoridad e historial
 
@@ -166,8 +183,8 @@ acelerar lectura, pero debe reconciliarse con estos registros.
 
 ## Unidades conceptuales de transacción
 
-Sin definir motor ni tablas, las siguientes operaciones deben comprometerse
-atómicamente:
+Sobre PostgreSQL y las tablas contractuales de `PHYSICAL_DATA_MODEL.md`, las
+siguientes operaciones deben comprometerse atómicamente:
 
 1. confirmar pedido, líneas, instantáneas, total, número visible, clave de
    idempotencia y registro auditable;
@@ -195,7 +212,8 @@ transacción distribuida con navegador, canal de tiempo real, agente o hardware.
   impresión.
 - Los relojes cliente no ordenan operaciones; el servidor asigna tiempo y
   versión autoritativos.
-- El periodo de retención de claves y el mecanismo físico quedan pendientes.
+- Idempotencia usa tabla común, uniques de dominio y mínimo 30 días; el plazo
+  final se valida con volumen/piloto.
 
 ## Invariantes financieras
 
@@ -259,7 +277,9 @@ Las decisiones futuras deben demostrar al menos:
 - cada transición y acción sensible registra actor, organización, entidad,
   acción, resultado, hora servidor, correlation ID y valores anteriores/nuevos
   relevantes;
-- retención y recuperación física se decidirán con el diseño técnico.
+- retención y recuperación física siguen
+  [la política aprobada](../operations/BACKUP_AND_RECOVERY.md); sus parámetros
+  legales, fiscales, de proveedor y de plan permanecen pendientes de validación.
 
 No se asume event sourcing.
 
@@ -267,7 +287,7 @@ No se asume event sourcing.
 
 No existen migraciones en esta etapa. Antes de crear la primera:
 
-1. aprobar modelo físico PostgreSQL y políticas RLS mediante el gate de datos;
+1. convertir el modelo físico aprobado en una migración revisada;
 2. convertir relaciones conceptuales en restricciones comprobables;
 3. definir procedimiento de aplicación y rollback;
 4. definir respaldo y recuperación;
@@ -277,12 +297,8 @@ Una migración aplicada será aditiva; no se editará para ocultar un cambio.
 
 ## Decisiones pendientes
 
-Las decisiones de dominio anteriores están resueltas por ADR-0002 a ADR-0004.
-Permanecen exclusivamente decisiones técnicas:
-
-- modelo físico PostgreSQL, restricciones e índices;
-- forma física del aislamiento organizacional;
-- duración de retención de idempotencia, auditoría e impresión;
-- transacciones, locking/versionado y publicación durable;
-- respaldo, recuperación y migraciones;
-- recuperación técnica de intentos `pending` después de interrupciones.
+- validar límites/índices con volumen y `EXPLAIN`;
+- retención legal/fiscal boliviana y privacidad;
+- TTL final de impresión/auditoría/logs;
+- detalles del worker outbox y reconciliación de intents abandonados;
+- ejecutar, no sólo documentar, migraciones, RLS, restore y concurrencia.

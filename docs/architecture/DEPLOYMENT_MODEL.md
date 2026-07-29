@@ -44,9 +44,10 @@ de anonimización aprobado.
 - backup antes de migraciones de riesgo y restauración ensayada;
 - agente firmado, canal estable, rollback y compatibilidad de protocolo.
 
-RPO, RTO, retención, región, residencia de datos y plan con PITR se aprobarán con
-el proveedor y un simulacro. Los backups anunciados por una plataforma no
-equivalen a recuperación probada.
+RPO objetivo es 15 minutos y RTO 4 horas, pendientes de simulacro. PITR es
+requisito antes del piloto salvo reapertura humana del riesgo; backups diarios
+solos no cumplen ese RPO. El runbook está en
+[`BACKUP_AND_RECOVERY.md`](../operations/BACKUP_AND_RECOVERY.md).
 
 ## Configuración y secretos
 
@@ -54,6 +55,9 @@ Configuración pública de web se separa de secretos. Credenciales de servicio
 viven sólo en API/gestor de secretos; las del agente son por dispositivo,
 rotables y revocables. Cada entorno muestra identidad no secreta para evitar
 operar sobre el destino equivocado.
+
+Fastify usa un rol DB runtime sujeto a RLS; service role se aísla a Auth Admin y
+operaciones excepcionales. El migrator no sirve tráfico.
 
 ## Operación mínima
 

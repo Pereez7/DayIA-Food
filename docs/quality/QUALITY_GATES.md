@@ -142,3 +142,23 @@ Antes de instalar una dependencia:
 Antes de aceptar el agente Tauri debe pasar el spike de
 [`PRINTING_ARCHITECTURE.md`](../architecture/PRINTING_ARCHITECTURE.md). Antes de
 producción deben probarse RLS, restore, rollback y hardware real.
+
+## Gate de datos y autenticación
+
+Antes de habilitar Fase 1 deben existir y pasar:
+
+- schema/migraciones reproducibles mediante Supabase CLI;
+- schema diff clasificado y revisión SQL;
+- constraints de organización, dinero, número, pago, caja e inmutabilidad;
+- pgTAP de RLS/grants con dos organizaciones y todos los roles DB;
+- integración Fastify con JWT, session context, membership y policies;
+- revocación, cambio de rol, expiry, key rotation y caída Auth;
+- carreras de confirmación, pago, apertura/cierre e idempotencia;
+- auditoría/outbox atómicos y reconciliación de respuesta perdida;
+- OpenAPI generado, diff compatible y consumer tests web/agente;
+- secret scan de repo/build y revocación ensayada;
+- migración sobre base efímera, backup y restore medido contra RPO/RTO.
+
+Un test ejecutado con service role no aprueba aislamiento RLS. Un backup listado
+sin restore no aprueba recuperación. ADR-0009 a ADR-0012 documentan dirección,
+pero los controles siguen `blocked` hasta existir implementación y evidencia.

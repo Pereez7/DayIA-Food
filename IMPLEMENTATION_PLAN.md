@@ -1,127 +1,115 @@
 STATUS: planning
 CURRENT_PHASE: phase-0
-PHASE_STATUS: stack-review
-CURRENT_FEATURE: phase-0-stack-review
-NEXT_GATE: phase-0-data-and-auth-review
+PHASE_STATUS: data-and-auth-review
+CURRENT_FEATURE: phase-0-data-and-auth-review
+NEXT_GATE: phase-0-printing-spike-plan
 FEATURE_CATALOG_ID: CORE-001
 
 # Plan de implementación
 
 ## Objetivo del ciclo
 
-Resolver documentalmente la dirección tecnológica inicial del MVP sin iniciar
-implementación. La sesión revisa `CORE-001`; no completa esa funcionalidad, no
-habilita Fase 1 y no incorpora una segunda funcionalidad.
+Definir la dirección física de PostgreSQL, Auth, sesiones, tenancy, RLS,
+transacciones, idempotencia, migraciones, secretos, recuperación y contratos del
+MVP. Es una única revisión documental de `CORE-001`: no completa la
+funcionalidad, no implementa `AUTH-001` y no habilita Fase 1.
 
 ## Resultado de revisión
 
-Veredicto documental: `approved-with-actions`.
+Veredicto final documental: `approved-with-actions`.
 
-Se acepta la dirección general del stack. El agente de impresión, la sesión de
-autenticación y el proveedor final de alojamiento conservan pruebas o decisiones
-pendientes. La aprobación no autoriza instalar dependencias ni crear código.
+Las decisiones son implementables y coherentes con ADR-0001 a ADR-0008. Siguen
+sin evidencia ejecutable de producto: schema, RLS, migraciones, Auth, OpenAPI,
+restore y carreras deben materializarse en sesiones futuras.
 
-## Stack recomendado
+## Autoridad aprobada
 
-- web SPA: React 19 + TypeScript + Vite, React Router, TanStack Query, React Hook
-  Form, Zod, CSS Modules, tokens CSS y Lucide;
-- estado: TanStack Query para servidor, React para estado local/derivado y
-  Zustand sólo para borradores efímeros entre rutas;
-- backend: Node.js 24 LTS + TypeScript + Fastify como API autoritativa;
-- datos/plataforma: PostgreSQL, Auth y Realtime administrados por Supabase;
-- acceso a datos: SQL parametrizado con `pg`, repositorios explícitos,
-  transacciones, restricciones y migraciones SQL futuras;
-- contratos: Zod como esquema runtime compartido y OpenAPI generado;
-- repositorio: monorepo con pnpm workspaces, sin orquestador adicional;
-- calidad futura: TypeScript, ESLint, Prettier, Vitest, Testing Library,
-  Playwright, pgTAP, Gitleaks y OSV-Scanner;
-- impresión: web separada de agente local; Tauri 2 es candidato `needs-spike`,
-  QZ Tray es contingencia;
-- despliegue: web estática, API contenedorizada, Supabase administrado y agente
-  local; proveedor concreto diferido.
+1. Supabase Auth autentica identidad.
+2. Fastify aplica autorización, casos de uso y dominio.
+3. PostgreSQL conserva datos e invariantes.
+4. RLS es defensa adicional.
+5. Frontend no decide organización ni tiene CRUD comercial directo.
+6. Session context + membership activa derivan organización/rol.
+7. Operaciones sensibles pasan por Fastify.
+8. Realtime Broadcast privado avisa; API/DB siguen siendo autoridad.
 
-Las versiones exactas se fijarán al inicializar la toolchain usando releases
-estables compatibles con Node 24 LTS y lockfile, no en esta sesión.
+## Decisiones del ciclo
+
+- ADR-0009: modelo físico, tenant en filas, FK compuestas, RLS y constraints.
+- ADR-0010: Auth PKCE, JWT/JWKS, session contexts y authz DB viva.
+- ADR-0011: Supabase CLI SQL, forward-only/expand-contract, PITR y restore.
+- ADR-0012: Zod como fuente; Fastify/OpenAPI/cliente generados.
 
 ## Plan → Act → Verify
 
 ### Plan
 
-- confirmar revisión de dominio comprometida y árbol inicial limpio;
-- leer contrato, arquitectura, dominio, calidad, ADR y skills aplicables;
-- evaluar alternativas contra MVP, seguridad, costo, portabilidad y operación.
+- comprobar stack versionado y árbol limpio;
+- leer fuentes, ADR, quality gates y skills aplicables;
+- fijar contrato verificable antes de modificar diseño.
 
 ### Act
 
-- registrar matrices y ADR técnicos;
-- actualizar arquitectura, repositorio, despliegue, seguridad e impresión;
-- concretar estrategia de pruebas, gates y presupuesto provisional;
-- registrar 25 escenarios adversariales, riesgos y decisiones `needs-spike`;
-- actualizar ledger, producto, memoria y changelog coordinadamente.
+- describir tablas, keys, relaciones, constraints, índices y retención;
+- fijar límites transaccionales e idempotencia;
+- definir Auth, sesión, autorización, RLS y secretos;
+- decidir migraciones, backup/restore y contratos;
+- coordinar arquitectura, dominio, calidad, ledger, memoria y changelog;
+- documentar 25 escenarios adversariales.
 
 ### Verify
 
-La evidencia debe probar:
-
-1. matrices con alternativas, criterios, pros, contras, riesgos, costo,
-   recomendación y estado;
-2. ADR-0005 a ADR-0008 coherentes con la arquitectura;
-3. 25 escenarios adversariales completos;
-4. JSON válido, enlaces locales resolubles y diff sin errores de whitespace;
-5. cero código, manifests, dependencias, SQL, CI o infraestructura;
-6. cero secretos y cero controles debilitados;
-7. Fase 1 bloqueada, cero funcionalidades `completed`, sin staging ni commit;
-8. revisión adversarial y validadores LoopKit con evidencia fresca.
+1. 25 escenarios con seis campos de refutación;
+2. inventario físico y 12 transacciones cubiertos;
+3. ADR-0009 a ADR-0012 válidos/coherentes;
+4. JSON parseable, cero completed y 13/13 Fase 1 bloqueadas;
+5. enlaces locales y referencias ADR resuelven;
+6. cero SQL/migraciones/manifests/dependencias/código/secretos;
+7. validadores LoopKit y `run.sh`;
+8. `git diff --check`, cero staging y revisión adversarial fría.
 
 ## Estado de fases
 
 | Fase | Estado | Motivo |
 |---|---|---|
-| Fase 0 | in-progress | Stack revisado; datos/autenticación y spikes siguen pendientes |
-| Fase 1 | blocked | Fase 0 no cumple todavía todos sus criterios de salida |
+| Fase 0 | in-progress | Data/auth decidido; spikes y materialización técnica siguen pendientes |
+| Fase 1 | blocked | Fase 0 y sus gates ejecutables no están cerrados |
 | Fase 1.5 | blocked | Fase 1 no está cerrada |
 | Fase 2 | blocked | Fase 1.5 no está cerrada |
 | Fase 3 | blocked | Fase 2 no está cerrada |
 | Fase 4 | blocked | Fase 3 no está cerrada |
 
-## Decisiones registradas
+## Acciones y bloqueos restantes
 
-- ADR-0005: stack web, estado, estilos y contratos.
-- ADR-0006: API TypeScript autoritativa sobre Supabase/PostgreSQL/Auth/Realtime.
-- ADR-0007: monorepo pnpm y toolchain de calidad.
-- ADR-0008: agente de impresión separado; Tauri condicionado a spike.
-
-## Acciones y bloqueos restantes de Fase 0
-
-- diseñar modelo físico, migraciones, RLS y pruebas de aislamiento;
-- fijar sesión, renovación, revocación y credenciales de dispositivo;
-- ejecutar spike del agente Tauri con Windows e impresoras reales;
-- escoger proveedor/región/plan con medición de costo, respaldo y recuperación;
-- convertir presupuestos provisionales en baselines ejecutados;
-- inicializar toolchain sólo en una futura sesión expresamente autorizada.
+- planificar/ejecutar spike Tauri y protocolo/agente de impresión;
+- inicializar toolchain sólo con sesión autorizada;
+- crear y probar migrations/schema/RLS/Auth/contratos;
+- seleccionar proveedor/plan/región/secret manager y habilitar PITR;
+- ejecutar restore, concurrencia, seguridad, rendimiento y hardware;
+- validar retención legal/fiscal y privacidad en Bolivia.
 
 ## Evidencia del ciclo
 
-| Control | Comando/procedimiento ejecutado | Resultado |
-|---|---|---|
-| Precondición | `git status`, `git log -3 --oneline`, `git branch --show-current` | árbol inicial limpio; dominio en `03a4b56`; `main` |
-| JSON/fases | parsear `FEATURE_STATUS.json` y afirmar ledger/fase | PASS: 0 completed, 13 de Fase 1 bloqueadas, siguiente gate correcto |
-| Enlaces | resolver referencias Markdown locales de forma recursiva | PASS: 106 archivos, 0 enlaces rotos |
-| Stack/adversarial | afirmar tabla numerada y campos | PASS: 25/25 escenarios |
-| LoopKit skills | validar `SKILL.md`, delimitadores, name y description | PASS: 53/53 |
-| LoopKit runner | `C:\Program Files\Git\bin\bash.exe -n run.sh` | PASS, código 0 |
-| Alcance/seguridad | buscar manifests, lockfiles, código, secretos y staging | PASS: 0 artefactos, 0 secretos, 0 staged |
-| Whitespace | `git diff --check` | PASS, código 0 |
-| Red flags | revisar añadidos por skip/only/no-verify/silenciado/fake done | PASS: menciones de `.skip` son prohibiciones documentales; 0 atajos |
+Evidencia ejecutada el 2026-07-29:
 
-Evidencia fresca: 2026-07-29T12:54:36-04:00. El `bash` de WSL no estaba
-disponible (`/bin/bash` ausente); se ejecutó el mismo validador con Git Bash.
+| Control | Resultado |
+|---|---|
+| Precondiciones Git | `main`, base versionada `86c4b14`, árbol inicialmente limpio |
+| Ledger | JSON parseable; `completed=0`; Fase 1 bloqueada `13/13`; siguiente gate correcto |
+| Enlaces Markdown | 120 documentos, 58 enlaces locales, 0 rotos |
+| Cobertura contractual | 25 escenarios adversariales; 12 operaciones obligatorias en 13 filas transaccionales; ADR-0009–0012 presentes |
+| LoopKit | frontmatter válido `53/53`; `bash -n run.sh` verde |
+| Alcance y secretos | 0 código, SQL, migraciones, manifests, dependencias o secretos de alta confianza añadidos |
+| Integridad del diff | `git diff --check` verde; staging vacío |
+| Revisión fría | dos iteraciones rechazaron 7 incoherencias; tercera iteración `PASS`, 0 hallazgos |
 
-Typecheck, lint, tests y build de aplicación siguen `blocked`: no existe todavía
-toolchain ni código y no se falseó su ejecución. Staging, commit y push: 0.
+Typecheck, tests de producto, build, migraciones, pgTAP y restore continúan
+`blocked` porque no existe implementación; no se declaran verdes por
+documentación. Schema, RLS, Auth, concurrencia, PITR/restore y contratos requieren
+evidencia ejecutable en sesiones futuras.
 
 ## Siguiente paso recomendado — no ejecutar
 
-Ejecutar una única sesión `phase-0-data-and-auth-review` para definir el modelo
-físico PostgreSQL, migraciones, RLS, Auth, sesiones, secretos y pruebas de
-aislamiento, sin iniciar la implementación del MVP.
+Ejecutar una única sesión `phase-0-printing-spike-plan` para convertir ADR-0008
+en un plan de spike medible sobre Windows e impresoras reales, sin desarrollar el
+agente ni inicializar la aplicación.

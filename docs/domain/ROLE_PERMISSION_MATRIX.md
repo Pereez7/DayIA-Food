@@ -47,3 +47,16 @@ Una autorización `A` no significa compartir credenciales: es una segunda
 decisión autenticada del owner sobre el comando concreto. Un cambio o revocación
 de rol rige desde la siguiente autorización de servidor, incluso si la sesión o
 pantalla continúa abierta.
+
+## Aplicación técnica
+
+- role vive en `memberships`, no en metadata JWT ni frontend;
+- Fastify declara policy por caso de uso y resuelve membership en cada request;
+- un permiso `A` es un grant de un solo uso, corto, ligado a actor, autorizador,
+  organización, operación, recurso y payload hash;
+- RLS limita organización, pero no expresa por sí sola todas las condiciones de
+  estado/ownership;
+- toda acción `D` se prueba contra API y DB sin efecto lateral;
+- cambiar rol incrementa versión y revoca contextos de sesión afectados.
+
+Referencia: [`AUTHORIZATION.md`](../security/AUTHORIZATION.md).
