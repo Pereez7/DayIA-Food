@@ -1,0 +1,15 @@
+{
+  "name": "dayia-food-spk-print-001",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Disposable Tauri bootstrap for SPK-PRINT-001; no printing capabilities.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "tauri:dev": "tauri dev",
+    "tauri:build:debug": "tauri build --debug --no-bundle",
+    "tauri:build": "tauri build --bundles nsis"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.11.4"
+  }
+}

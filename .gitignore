@@ -23,3 +23,14 @@ desktop.ini
 *.log
 *.bak
 *.local
+
+# Disposable SPK-PRINT-001 outputs (source and evidence remain tracked)
+spikes/printing-agent/node_modules/
+spikes/printing-agent/dist/
+spikes/printing-agent/frontend-dist/
+spikes/printing-agent/src-tauri/target/
+spikes/printing-agent/src-tauri/gen/
+spikes/printing-agent/artifacts/
+spikes/printing-agent/installers/
+spikes/printing-agent/bin/
+spikes/printing-agent/temp/

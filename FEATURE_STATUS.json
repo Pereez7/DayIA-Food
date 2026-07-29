@@ -2,8 +2,8 @@
   "schema_version": 1,
   "current_phase": "phase-0",
   "phase_status": "in-progress",
-  "current_feature": "CORE-001",
-  "next_gate": "phase-0-printing-spike",
+  "current_feature": "SPK-PRINT-001",
+  "next_gate": "SPK-PRINT-002",
   "scope_decision": "ADR-0001",
   "domain_decisions": [
     "ADR-0002",
@@ -76,7 +76,7 @@
       "id": "SPK-PRINT-001",
       "name": "Bootstrap e instalación mínima Tauri",
       "phase": "phase-0",
-      "status": "specified",
+      "status": "verifying",
       "priority": "critical",
       "tests_required": [
         "windows-install",
@@ -84,11 +84,11 @@
         "uninstall",
         "artifact-inventory"
       ],
-      "verification_status": "not-started",
+      "verification_status": "verifying",
       "dependencies": [],
       "blockers": [
-        "spike toolchain not initialized",
-        "Windows target environment not recorded"
+        "Windows 11 target environment not available",
+        "manual install, UAC, Defender, SmartScreen, standard-user and uninstall evidence pending"
       ]
     },
     {

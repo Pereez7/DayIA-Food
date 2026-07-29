@@ -126,8 +126,18 @@ de hipótesis transitorias.
   offline limitado, instalación/update/uninstall y revisión adversarial.
 - 2026-07-29: un estado del spooler sólo permite `submitted-to-os`; papel físico
   incierto conserva `delivery-unknown` sin reintento automático.
+- 2026-07-29: SPK-PRINT-001 creó un bootstrap Tauri 2 descartable aislado en
+  `spikes/printing-agent/`; tests, clippy, builds debug/release, runtime sin TCP externo y
+  NSIS `currentUser` pasaron en un entorno de desarrollo Windows 10 Pro.
+- 2026-07-29: SPK-PRINT-001 permanece `verifying` con resultado
+  `manual-validation-pending`: faltan Windows 11 x64 soportado, cuenta estándar,
+  instalación/desinstalación y evidencia humana de UAC, Defender y SmartScreen.
+- 2026-07-29: el spike fija Tauri crate 2.11.5, CLI 2.11.4, tauri-build 2.6.3 y
+  Rust 1.97.1. RustSec encontró 0 vulnerabilidades y warnings `unic-*` transitivos
+  que deben revisarse antes de aceptar Tauri; ADR-0008 continúa `proposed`.
 
 ## Próximo paso
 
-Ejecutar una única sesión `SPK-PRINT-001` sólo después de autorizar toolchain y
-dependencias del spike; no agrupar todavía los diez ciclos.
+Completar el checklist manual de SPK-PRINT-001 en Windows 11 x64 soportado con
+cuenta estándar y AV/firewall activos. No iniciar SPK-PRINT-002 ni aceptar
+ADR-0008 antes de revisar esa evidencia.

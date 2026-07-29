@@ -1,72 +1,81 @@
-# Contrato de sesión — phase-0-printing-spike-plan
+# Contrato de sesión — SPK-PRINT-001
 
 ## Objetivo
 
-Diseñar un spike técnico pequeño, descartable y medible que permita decidir con
-hardware real si Tauri 2 es adecuado como runtime del agente local de impresión
-del MVP, sin crear el agente ni aceptar ADR-0008.
+Crear y verificar un bootstrap descartable Tauri 2 para Windows que permita
+medir desarrollo, compilación, ejecución, instalador NSIS por usuario y
+desinstalación, sin implementar ninguna capacidad de impresión.
 
 ## Termina cuando
 
-- existen plan, matriz de experimentos, ficha de hardware y criterios
-  `GO | NO-GO | NEEDS-FOLLOW-UP`;
-- las 20 capacidades del spike tienen experimento y evidencia requerida;
-- los 25 escenarios adversariales contienen riesgo, experimento, resultado
-  esperado, evidencia, criterio de fallo, mitigación y decisión afectada;
-- polling saliente, WebSocket saliente, HTTP local y cola/archivo local se
-  comparan sin convertir una hipótesis en protocolo aprobado;
-- los tickets mínimos de cocina y caja y el contrato provisional de cola están
-  definidos sin código ni datos productivos;
-- las métricas poseen procedimiento y baseline, sin umbrales definitivos
-  inventados;
-- SPK-PRINT-001 a SPK-PRINT-010 quedan `specified`, ninguno `completed`;
-- `PRINT-001` y `PRINT-002` siguen bloqueados, Fase 1 permanece bloqueada 13/13
-  y ADR-0008 conserva estado `proposed`;
-- JSON, enlaces, LoopKit, diff, alcance, secretos y revisión adversarial pasan
-  con evidencia fresca.
+- el único código nuevo vive en `spikes/printing-agent/`;
+- la ventana muestra `SPK-PRINT-001`, versiones de aplicación/Tauri, OS,
+  arquitectura, disponibilidad de WebView2 y `runtime-operational`;
+- pruebas automatizadas demuestran identificador único, configuración per-user,
+  ausencia de elevación, updater, autostart, red y capacidades de impresión;
+- las compilaciones debug/release y el instalador NSIS producen artefactos
+  identificados con hash;
+- una ejecución real prueba que el proceso inicia y cierra, y registra baseline
+  básico de tiempo, CPU, RAM, disco y conexiones de red;
+- `README.md`, `EVIDENCE.md`, `MANUAL_TEST_CHECKLIST.md` y
+  `KNOWN_LIMITATIONS.md` contienen comandos y evidencia reproducibles;
+- las verificaciones documental, JSON, enlaces, dependencias, secretos, diff,
+  LoopKit y revisión adversarial se ejecutan con evidencia fresca;
+- cualquier validación manual no confirmada mantiene el resultado
+  `manual-validation-pending` y `SPK-PRINT-001` en `verifying`.
 
 ## Ruta de evaluación
 
-Esta sesión sólo valida documentos. El spike posterior se evaluará en un equipo
-Windows objetivo mediante instalación/desinstalación, dos impresoras térmicas
-reales cuando estén disponibles, usuario estándar y administrador, red
-conectada/desconectada, spooler normal/bloqueado y antivirus activo. Cada ciclo
-SPK define su procedimiento exacto antes de ejecutarse.
+Automatizada:
+
+```text
+npm ci --ignore-scripts
+npm test
+npm run tauri:build:debug
+npm run tauri:build
+```
+
+Runtime: abrir el ejecutable generado, comprobar la ventana técnica y cerrarla
+desde el control visible. Instalación manual: ejecutar el NSIS como usuario
+estándar, validar UAC/SmartScreen/AV, iniciar/cerrar y desinstalar desde Windows.
 
 ## No tocar
 
-- código, Rust, Node, proyecto Tauri, manifests, dependencias, CI, servicios,
-  impresoras o infraestructura;
-- pedidos productivos, facturación, multi-sucursal, diseñador de tickets,
-  telemetría productiva u offline-first;
-- decisiones aceptadas anteriores o lógica original de LoopKit;
-- staging, commits o remotos.
+- enumeración, selección o acceso a impresoras;
+- spooler, ESC/POS, tickets, cola, jobs, reintentos o comunicación servidor;
+- API, base de datos, autenticación, aplicaciones productivas o infraestructura;
+- updater, autostart, firma, listeners, puertos o telemetría remota;
+- `SPK-PRINT-002` en adelante, `PRINT-001`, `PRINT-002` o ADR-0008;
+- staging, commits, push o lógica original de LoopKit.
 
 ## Detenerse si
 
-- el gate de datos/autenticación deja de estar versionado o aparece un cambio
-  ajeno;
-- el plan promete certeza física después de `submitted-to-os`;
-- se elige plugin, driver, protocolo, instalador o canal de actualización sin
-  evidencia del spike;
-- se intenta aceptar ADR-0008, desbloquear Fase 1 o reducir un control;
-- el diff incorpora cualquier artefacto ejecutable o secreto real.
+- faltan C++ Build Tools o WebView2 y su instalación requiere flujo pesado,
+  interactivo o reinicio;
+- aparece un cambio ajeno en el árbol de trabajo;
+- una prueba previamente verde falla por el spike;
+- se requiere elevar el proceso normal, desactivar AV/firewall o debilitar un
+  control;
+- el código sale de `spikes/printing-agent/`.
 
 ## Sprint contract — 2026-07-29
 
-Entregable: plan documental reproducible para ejecutar y decidir el spike de
-impresión Tauri 2 en sesiones posteriores.
+Entregable: bootstrap Tauri 2 descartable que abre una ventana técnica
+identificable y genera un NSIS per-user sin capacidades de impresión o red
+externa. El IPC empaquetado de Tauri no constituye un listener ni transporte de
+red.
 
 Predicados de aceptación:
 
-- [ ] cuatro entregables `docs/spikes/` existen y sus enlaces resuelven;
-- [ ] 20 capacidades, 25 escenarios, 10 ciclos y 4 transportes están cubiertos;
-- [ ] cada ciclo declara objetivo, entradas, salida, criterios, pruebas,
-      evidencia, rollback y prohibiciones;
-- [ ] métricas y hardware pendiente se registran sin resultados inventados;
-- [ ] ADR-0008 permanece `proposed` y enlaza el plan y sus criterios;
-- [ ] ledger parsea con cero `completed`, spikes `specified` y Fase 1 bloqueada;
-- [ ] validación documental, LoopKit, alcance, secretos y revisión fría pasan.
+- [ ] pruebas automatizadas del contrato pasan sin exclusiones;
+- [ ] build debug y release terminan con código 0;
+- [ ] el binario release inicia, permanece operativo y cierra limpiamente;
+- [ ] el NSIS per-user existe, tiene hash y no solicita privilegio permanente;
+- [ ] no existen permisos o tráfico de red externa, shell, filesystem general,
+      updater, autostart ni impresión; el instalador WebView2 es offline;
+- [ ] artefactos y evidencia quedan inventariados sin secretos;
+- [ ] validaciones manuales no observadas permanecen pendientes y bloquean
+      `completed`.
 
-Fuera de alcance: ejecutar el spike, instalar toolchain o dependencias, elegir
-definitivamente Tauri/QZ, diseñar interfaz o integrar pedidos reales.
+Fuera de alcance: imprimir, enumerar hardware, persistir cola, integrar servidor,
+aceptar Tauri o habilitar Fase 1.
