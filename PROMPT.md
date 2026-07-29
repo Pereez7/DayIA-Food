@@ -39,6 +39,13 @@ Runtime: abrir el ejecutable generado, comprobar la ventana técnica y cerrarla
 desde el control visible. Instalación manual: ejecutar el NSIS como usuario
 estándar, validar UAC/SmartScreen/AV, iniciar/cerrar y desinstalar desde Windows.
 
+## Evidencia manual recibida
+
+El operador reportó `Windows 10 compatibility observation: passed` y
+`Windows 11 baseline validation: pending`. La primera declaración sólo se
+registra como compatibilidad observada: no sustituye las doce respuestas ni
+habilita `completed`, `SPK-PRINT-002`, Fase 1 o ADR-0008.
+
 ## No tocar
 
 - enumeración, selección o acceso a impresoras;

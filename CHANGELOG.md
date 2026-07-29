@@ -78,6 +78,9 @@ versionado semántico cuando exista una primera versión publicable.
   como hipótesis comparables, no decisiones aceptadas.
 - Siguiente gate cambiado a `phase-0-printing-spike`; ADR-0008 sigue `proposed`
   y Fase 1 permanece bloqueada.
+- Observación manual de compatibilidad Windows 10 de SPK-PRINT-001 registrada
+  como `passed`; el baseline Windows 11 y su checklist detallado siguen
+  pendientes, por lo que el spike permanece `verifying`.
 
 ### Security
 

@@ -4,13 +4,26 @@
 
 | Campo | Valor |
 |---|---|
-| Fecha/hora UTC | pendiente |
-| Operador | pendiente |
-| Windows edición/versión/build | pendiente |
-| Tipo de cuenta | estándar / administrador / pendiente |
-| Instalador y SHA-256 | pendiente |
-| WebView2 | pendiente |
-| Antivirus | pendiente |
+| Fecha/hora UTC | 2026-07-29; hora no aportada |
+| Operador | no aportado |
+| Windows edición/versión/build | Windows 10; edición/versión/build no aportados |
+| Tipo de cuenta | no aportado |
+| Instalador y SHA-256 | no aportados para la ejecución manual |
+| WebView2 | no aportado para la ejecución manual |
+| Antivirus/firewall | no aportados para la ejecución manual |
+
+## Resultado resumido aportado
+
+El operador declaró:
+
+```text
+Windows 10 compatibility observation: passed
+Windows 11 baseline validation: pending
+```
+
+El primer resultado se conserva como observación de compatibilidad. No completa
+las preguntas siguientes ni demuestra el baseline, porque no incluyó respuestas
+o evidencia por control.
 
 ## Procedimiento
 
@@ -46,7 +59,8 @@ otros datos sensibles.
 
 ## Criterio
 
-Hasta completar las doce respuestas con evidencia humana:
+La declaración resumida de Windows 10 no sustituye estas doce respuestas. Hasta
+completarlas sobre Windows 11 x64 con evidencia humana:
 
 - estado de `SPK-PRINT-001`: `verifying`;
 - resultado: `manual-validation-pending`;

@@ -2,9 +2,11 @@
 
 ## Resultado
 
-`manual-validation-pending` — la evidencia automatizada pasó, pero instalación,
-UAC/Defender/SmartScreen, cuenta estándar y desinstalación requieren confirmación
-humana. El ledger permanece `verifying`, nunca `completed`.
+`manual-validation-pending` — el operador reportó que la observación de
+compatibilidad en Windows 10 pasó y que el baseline Windows 11 continúa
+pendiente. No se aportó el desglose de cuenta, instalación,
+UAC/Defender/SmartScreen/firewall, ejecución, reapertura, desinstalación o
+residuos. El ledger permanece `verifying`, nunca `completed`.
 
 ## Identidad
 
@@ -34,6 +36,20 @@ Rustup tenía configuración previa, aunque sus binarios no estaban visibles en
 PATH. El instalador oficial dejó el toolchain estable ya existente en 1.97.1 y
 añadió el acceso de usuario; no se actualizó npm ni Visual Studio.
 
+## Evidencia manual recibida
+
+Declaración directa del operador recibida el 2026-07-29:
+
+```text
+Windows 10 compatibility observation: passed
+Windows 11 baseline validation: pending
+```
+
+Se registra como observación de compatibilidad humana con resultado `passed`.
+No satisface el baseline Windows 11 ni permite inferir las doce confirmaciones
+del checklist, porque no se aportaron edición/build, tipo de cuenta, estado de
+Defender/firewall, avisos, pasos observados, inventario residual o capturas.
+
 ## Comandos y controles
 
 | Control | Comando/procedimiento | Resultado |
@@ -57,7 +73,7 @@ añadió el acceso de usuario; no se actualizó npm ni Visual Studio.
 | LoopKit | 53 frontmatters + Git Bash syntax/hooks | 53/53; hooks y JSON exit 0 |
 | Secret/scope | regex alta confianza + files + source scan | 0 secretos; 0 archivos sensibles; 0 capacidades prohibidas |
 | Git | `git diff --check`, staging, ignore gates | exit 0; staging 0; artefactos ignorados |
-| Instalación/desinstalación | checklist humano | pendiente |
+| Instalación/desinstalación | declaración humana resumida | Windows 10 compatibility `passed`; Windows 11 y desglose del checklist pendientes |
 
 La verificación final automatizada fue ejecutada por Codex el
 `2026-07-29T20:18:53.3225291Z`. El verificador observó durante 50 muestras el
@@ -175,5 +191,5 @@ en un falso verde ni habilitó el siguiente spike.
   son `runtime_info` y `close_app`.
 - La CSP permite exclusivamente el IPC interno documentado por Tauri; no permite
   HTTP/HTTPS/WebSocket externo.
-- Resultado final previsto mientras falte evidencia humana:
+- Resultado final mientras falte la validación Windows 11 y evidencia granular:
   `manual-validation-pending`, nunca `completed`.

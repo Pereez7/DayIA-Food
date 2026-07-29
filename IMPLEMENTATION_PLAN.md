@@ -45,7 +45,8 @@ desinstalación y baseline inicial; no incluye ninguna lógica de impresión.
 7. veinte escenarios adversariales registrados con evidencia o pendiente;
 8. revisión fría independiente contra `PROMPT.md`;
 9. staging vacío, sin commit ni push;
-10. validación manual pendiente impide `completed`.
+10. observación Windows 10 se registra sin sustituir el baseline Windows 11;
+11. validación manual Windows 11 pendiente impide `completed`.
 
 ## Estado inicial observado
 
@@ -70,10 +71,11 @@ desinstalación y baseline inicial; no incluye ninguna lógica de impresión.
 ## Resultado actual
 
 `manual-validation-pending`. Tests, clippy, builds debug/release, runtime y NSIS
-per-user tienen evidencia automatizada. SPK-PRINT-001 permanece `verifying`
-porque faltan instalación/desinstalación humana, UAC/Defender/SmartScreen y
-Windows 11 x64 objetivo. Windows 10 Pro fuera de soporte no puede aprobar el
-baseline.
+per-user tienen evidencia automatizada. El operador reportó `passed` para la
+observación de compatibilidad Windows 10, sin desglose de las doce
+confirmaciones. SPK-PRINT-001 permanece `verifying` porque falta la validación
+completa en Windows 11 x64 con cuenta estándar, AV/firewall activos,
+instalación, ejecución, reapertura, desinstalación y ausencia de residuos.
 
 ## Siguiente paso recomendado — no ejecutar aún
 

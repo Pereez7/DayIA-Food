@@ -130,8 +130,9 @@ de hipótesis transitorias.
   `spikes/printing-agent/`; tests, clippy, builds debug/release, runtime sin TCP externo y
   NSIS `currentUser` pasaron en un entorno de desarrollo Windows 10 Pro.
 - 2026-07-29: SPK-PRINT-001 permanece `verifying` con resultado
-  `manual-validation-pending`: faltan Windows 11 x64 soportado, cuenta estándar,
-  instalación/desinstalación y evidencia humana de UAC, Defender y SmartScreen.
+  `manual-validation-pending`: la observación manual Windows 10 fue reportada
+  `passed` sin desglose, pero faltan Windows 11 x64 soportado, cuenta estándar,
+  instalación/desinstalación y evidencia humana de UAC, Defender y firewall.
 - 2026-07-29: el spike fija Tauri crate 2.11.5, CLI 2.11.4, tauri-build 2.6.3 y
   Rust 1.97.1. RustSec encontró 0 vulnerabilidades y warnings `unic-*` transitivos
   que deben revisarse antes de aceptar Tauri; ADR-0008 continúa `proposed`.

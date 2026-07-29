@@ -87,8 +87,8 @@
       "verification_status": "verifying",
       "dependencies": [],
       "blockers": [
-        "Windows 11 target environment not available",
-        "manual install, UAC, Defender, SmartScreen, standard-user and uninstall evidence pending"
+        "Windows 11 x64 baseline validation pending",
+        "Windows 11 manual install, standard-user, Defender, firewall, runtime and uninstall evidence pending"
       ]
     },
     {

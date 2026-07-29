@@ -1,12 +1,13 @@
 # Limitaciones conocidas — SPK-PRINT-001
 
-- El equipo disponible usa Windows 10 Pro 22H2 build 19045.6466. Está fuera del
-  baseline Windows 11 soportado y no puede justificar `GO`.
+- La observación manual de compatibilidad Windows 10 fue reportada como
+  `passed`, sin edición/build ni desglose del checklist. Está fuera del baseline
+  Windows 11 soportado y no puede cerrar SPK-PRINT-001 ni justificar `GO`.
 - La cuenta del proceso no está elevada, pero no se ha demostrado todavía una
   instalación completa con una cuenta estándar separada.
-- UAC, Defender, SmartScreen, firewall, instalación y desinstalación requieren
-  observación humana; las consultas automatizadas a Defender/firewall devolvieron
-  `Access denied`.
+- UAC, Defender, SmartScreen, firewall, instalación y desinstalación no tienen
+  evidencia manual granular. Las consultas automatizadas a Defender/firewall
+  devolvieron `Access denied`.
 - El instalador no está firmado. Una advertencia SmartScreen es posible y debe
   registrarse, no evitarse desactivando el control.
 - El icono es una marca técnica neutral requerida por el recurso Windows; no es
