@@ -1,0 +1,558 @@
+{
+  "schema_version": 1,
+  "current_phase": "phase-0",
+  "phase_status": "in-progress",
+  "current_feature": "CORE-001",
+  "next_gate": "phase-0-architecture-review",
+  "scope_decision": "ADR-0001",
+  "allowed_statuses": [
+    "not-started",
+    "specified",
+    "in-progress",
+    "implemented",
+    "verifying",
+    "blocked",
+    "completed",
+    "deferred"
+  ],
+  "features": [
+    {
+      "id": "CORE-001",
+      "name": "Gobierno del proyecto",
+      "phase": "phase-0",
+      "status": "verifying",
+      "priority": "critical",
+      "tests_required": [
+        "documentation-validation",
+        "json-validation",
+        "reference-validation",
+        "adversarial-review"
+      ],
+      "verification_status": "verifying",
+      "dependencies": [],
+      "blockers": []
+    },
+    {
+      "id": "CORE-002",
+      "name": "Fundaciones técnicas",
+      "phase": "phase-0",
+      "status": "not-started",
+      "priority": "critical",
+      "tests_required": [
+        "technical-smoke",
+        "typecheck",
+        "lint",
+        "unit",
+        "production-build"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "CORE-001"
+      ],
+      "blockers": [
+        "architecture and stack decisions pending",
+        "quality commands not configured"
+      ]
+    },
+    {
+      "id": "CORE-003",
+      "name": "Configuración del restaurante",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "permissions",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "CORE-002"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "CATALOG-001",
+      "name": "Catálogo esencial",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "contract",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "CORE-003"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "PIZZA-001",
+      "name": "Configuración mínima de pizza",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "contract",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "CATALOG-001"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "POS-001",
+      "name": "Punto de venta mínimo",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "integration",
+        "accessibility",
+        "performance",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "AUTH-001",
+        "CATALOG-001",
+        "PIZZA-001",
+        "CASH-001"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "ORDER-001",
+      "name": "Creación de pedido",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "contract",
+        "e2e",
+        "regression"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "POS-001"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "ORDER-002",
+      "name": "Cálculo de importes",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "edge-cases",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "ORDER-001"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "KITCHEN-001",
+      "name": "Flujo básico de cocina",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "concurrency",
+        "e2e",
+        "regression"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "ORDER-001"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "ORDER-003",
+      "name": "Consulta operativa",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "integration",
+        "permissions",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "ORDER-002",
+        "KITCHEN-001"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "AUTH-001",
+      "name": "Autenticación mínima",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "permissions",
+        "security",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "CORE-002"
+      ],
+      "blockers": [
+        "phase-0 not completed",
+        "authentication mechanism ADR pending"
+      ]
+    },
+    {
+      "id": "CASH-001",
+      "name": "Caja básica",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "permissions",
+        "e2e",
+        "regression"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "AUTH-001"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "PAYMENT-001",
+      "name": "Cobro básico",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "unit",
+        "integration",
+        "permissions",
+        "e2e",
+        "regression"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "ORDER-002",
+        "CASH-001"
+      ],
+      "blockers": [
+        "phase-0 not completed"
+      ]
+    },
+    {
+      "id": "PRINT-001",
+      "name": "Impresión básica en cocina",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "contract",
+        "integration",
+        "queue",
+        "reconnection",
+        "real-hardware"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "KITCHEN-001"
+      ],
+      "blockers": [
+        "phase-0 not completed",
+        "printing architecture not approved"
+      ]
+    },
+    {
+      "id": "PRINT-002",
+      "name": "Impresión básica en caja",
+      "phase": "phase-1",
+      "status": "specified",
+      "priority": "must",
+      "tests_required": [
+        "contract",
+        "integration",
+        "queue",
+        "reconnection",
+        "real-hardware"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "PAYMENT-001"
+      ],
+      "blockers": [
+        "phase-0 not completed",
+        "printing architecture not approved"
+      ]
+    },
+    {
+      "id": "INGREDIENT-001",
+      "name": "Ingredientes",
+      "phase": "phase-2",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "unit",
+        "integration",
+        "contract",
+        "permissions"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "phase-1.5"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "INVENTORY-001",
+      "name": "Inventario",
+      "phase": "phase-2",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "unit",
+        "integration",
+        "concurrency",
+        "permissions",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "phase-1.5"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "RECIPE-001",
+      "name": "Recetas",
+      "phase": "phase-2",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "unit",
+        "integration",
+        "contract",
+        "regression"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "INGREDIENT-001",
+        "INVENTORY-001"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "SUPPLIER-001",
+      "name": "Proveedores",
+      "phase": "phase-2",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "unit",
+        "integration",
+        "permissions"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "CORE-003"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "PURCHASE-001",
+      "name": "Compras",
+      "phase": "phase-2",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "unit",
+        "integration",
+        "permissions",
+        "e2e",
+        "regression"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "INVENTORY-001",
+        "SUPPLIER-001"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "WASTE-001",
+      "name": "Mermas",
+      "phase": "phase-2",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "unit",
+        "integration",
+        "permissions",
+        "regression"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "INVENTORY-001"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "TABLE-001",
+      "name": "Mesas",
+      "phase": "phase-3",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "integration",
+        "concurrency",
+        "e2e"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "KITCHEN-001",
+        "phase-2"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "DELIVERY-001",
+      "name": "Delivery",
+      "phase": "phase-3",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "integration",
+        "contract",
+        "e2e",
+        "resilience"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "KITCHEN-001",
+        "phase-2"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "PROMO-001",
+      "name": "Promociones",
+      "phase": "phase-3",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "unit",
+        "integration",
+        "e2e",
+        "regression"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "ORDER-002",
+        "phase-2"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "ORG-001",
+      "name": "Multi-sucursal",
+      "phase": "phase-4",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "isolation",
+        "permissions",
+        "integration",
+        "e2e",
+        "security"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "phase-3"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    },
+    {
+      "id": "INTEGRATION-001",
+      "name": "Integraciones externas",
+      "phase": "phase-4",
+      "status": "not-started",
+      "priority": "future",
+      "tests_required": [
+        "contract",
+        "integration",
+        "resilience",
+        "security"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "ORG-001"
+      ],
+      "blockers": [
+        "future phase not enabled"
+      ]
+    }
+  ]
+}
