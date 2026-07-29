@@ -30,7 +30,7 @@ experiencia de agentes; ecosistema; y reversibilidad.
 | Auth | Supabase Auth; Auth.js; proveedor SaaS separado | integrado con Postgres/RLS y bajo costo inicial | sesión/claims deben diseñarse | Supabase Auth | accepted |
 | Tiempo real | Supabase Realtime; WebSocket propio; polling | reduce operación y tiene fallback sencillo | entrega no equivale a autoridad | invalidación + refetch | accepted |
 | Repositorio | pnpm monorepo; npm monorepo; repos separados | contratos atómicos y lockfile único | CI puede crecer; pnpm es otra herramienta | pnpm workspaces | accepted |
-| Impresión | Tauri; QZ Tray; Electron; servicio Node | Tauri promete instalador pequeño y sin admin por usuario | hardware, firma y updates sin probar | Tauri candidato; QZ contingencia | needs-spike |
+| Impresión | Tauri; QZ Tray; Electron; servicio Node | Tauri ofrece NSIS per-user y capacidades acotables | API/plugin, hardware, identidad, firma y updates sin probar | Tauri candidato; QZ contingencia; plan SPK-PRINT-001–010 | needs-spike |
 | Observabilidad | Pino/Sentry; OpenTelemetry/APM; logs de proveedor | inicio proporcional y correlación | proveedor y privacidad por validar | Pino + Sentry; OTel diferido | accepted |
 | Hosting | host estático + contenedor; PaaS integrado; VM | separación portable y rollback por artefacto | región/costos aún desconocidos | topología aceptada, proveedor diferido | needs-spike |
 
@@ -90,6 +90,25 @@ El dominio puro no importará React, Fastify, Supabase ni Tauri. Adaptadores,
 repositorios y contratos limitan lock-in. Exportaciones y restauración
 PostgreSQL, compatibilidad de API y ventanas de versión del agente son requisitos
 operativos.
+
+## Dirección provisional del spike de impresión
+
+- objetivo primario: Windows 11 x64 soportado; Windows 10 sólo LTSC/ESU
+  representativo;
+- Tauri requiere WebView2 en runtime y C++ Build Tools/Rust sólo en desarrollo;
+- NSIS per-user es hipótesis de instalación sin admin, no decisión final;
+- Tauri no se presume proveedor de impresión térmica: se evaluarán spooler
+  Windows/driver y raw ESC/POS detrás de un contrato;
+- cualquier plugin/adaptador exige evidencia de mantenimiento, licencia,
+  advisories, permisos y Tauri 2 antes de usarse;
+- polling HTTPS saliente es hipótesis preferida; tres transportes alternativos
+  se comparan;
+- updater y code signing sólo se prueban en el ciclo correspondiente; ninguna
+  clave se crea en esta sesión.
+
+Fuente contractual:
+[`PRINTING_SPIKE_PLAN.md`](../spikes/PRINTING_SPIKE_PLAN.md). ADR-0008 continúa
+`proposed`.
 
 ## Toolchain futuro
 

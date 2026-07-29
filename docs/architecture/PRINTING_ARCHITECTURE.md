@@ -84,18 +84,32 @@ reconcilia leases y resultados.
 
 ## Gate del spike de impresión
 
-Antes de aceptar Tauri se debe demostrar en Windows 10/11:
+El gate ejecutable está dividido en
+[`SPK-PRINT-001` a `SPK-PRINT-010`](../spikes/PRINTING_SPIKE_PLAN.md), con
+[matriz adversarial](../spikes/PRINTING_SPIKE_MATRIX.md),
+[ficha de hardware](../spikes/PRINTING_HARDWARE_TEMPLATE.md) y
+[criterios de decisión](../spikes/PRINTING_GO_NO_GO.md).
 
-1. instalación y desinstalación por usuario sin privilegio administrador;
+Windows 11 x64 en versión soportada es el objetivo primario. Windows 10 sólo es
+compatibilidad condicionada para LTSC/ESU y hardware real del piloto; Windows 10
+Home/Pro sin soporte no puede justificar `GO`.
+
+Antes de aceptar Tauri se debe demostrar:
+
+1. instalación, actualización, rollback y desinstalación por usuario sin
+   privilegio administrador durante operación normal;
 2. firma, antivirus, firewall, arranque y actualización/rollback;
-3. impresión silenciosa en dos modelos térmicos objetivo, tanto ruta raw ESC/POS
-   como driver cuando aplique;
+3. impresión silenciosa en las impresoras térmicas objetivo, tanto ruta raw
+   ESC/POS como driver cuando aplique;
 4. sin papel, apagado, error, Unicode y corte;
 5. reinicio en cada punto de lease sin duplicación automática;
 6. enrolamiento, rotación y revocación de identidad del dispositivo;
 7. consumo de CPU, memoria, disco y tiempos contra presupuesto provisional;
 8. logs locales rotativos, redactados y exportables para soporte.
 
-Si un criterio bloqueante falla, comparar QZ Tray con la misma matriz. Formato,
-lease, protocolo, credenciales, compatibilidad y canal de actualización siguen
-pendientes; `PRINT-001` y `PRINT-002` permanecen bloqueadas.
+Polling HTTPS saliente es sólo la hipótesis inicial del spike; WebSocket saliente,
+HTTP local y archivo/cola local se comparan antes de decidir protocolo. Si un
+criterio bloqueante falla, QZ Tray se compara con la misma matriz, no se adopta
+automáticamente. Formato, lease, protocolo, credenciales, compatibilidad y canal
+de actualización siguen pendientes; `PRINT-001` y `PRINT-002` permanecen
+bloqueadas.

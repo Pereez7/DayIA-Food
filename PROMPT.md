@@ -1,43 +1,72 @@
-# Contrato de sesión — phase-0-data-and-auth-review
+# Contrato de sesión — phase-0-printing-spike-plan
 
 ## Objetivo
 
-Definir documentalmente el diseño físico inicial de datos, autenticación,
-sesiones, tenancy, autorización, RLS, migraciones, transacciones, idempotencia,
-secretos, recuperación y contratos del MVP sin crear SQL ni implementación.
+Diseñar un spike técnico pequeño, descartable y medible que permita decidir con
+hardware real si Tauri 2 es adecuado como runtime del agente local de impresión
+del MVP, sin crear el agente ni aceptar ADR-0008.
 
 ## Termina cuando
 
-- autoridad, acceso frontend/API y contexto organizacional son inequívocos;
-- tablas, claves, relaciones, constraints, índices, historial y eliminación
-  están descritos conceptualmente;
-- doble pago, doble caja y numeración concurrente tienen protección física;
-- sesión, revocación, cambio de rol y fallos del proveedor tienen resultado;
-- RLS, roles de base de datos y secretos siguen mínimo privilegio;
-- migraciones, backup/restore y OpenAPI poseen estrategia y ADR aceptado;
-- 25 escenarios adversariales incluyen riesgo, protección, constraint,
-  autorización, prueba futura y limitación;
-- JSON, enlaces, skills LoopKit, diff, alcance y revisión adversarial pasan con
-  evidencia fresca;
-- `STATUS: planning`, cero `completed` y Fase 1 bloqueada se conservan.
+- existen plan, matriz de experimentos, ficha de hardware y criterios
+  `GO | NO-GO | NEEDS-FOLLOW-UP`;
+- las 20 capacidades del spike tienen experimento y evidencia requerida;
+- los 25 escenarios adversariales contienen riesgo, experimento, resultado
+  esperado, evidencia, criterio de fallo, mitigación y decisión afectada;
+- polling saliente, WebSocket saliente, HTTP local y cola/archivo local se
+  comparan sin convertir una hipótesis en protocolo aprobado;
+- los tickets mínimos de cocina y caja y el contrato provisional de cola están
+  definidos sin código ni datos productivos;
+- las métricas poseen procedimiento y baseline, sin umbrales definitivos
+  inventados;
+- SPK-PRINT-001 a SPK-PRINT-010 quedan `specified`, ninguno `completed`;
+- `PRINT-001` y `PRINT-002` siguen bloqueados, Fase 1 permanece bloqueada 13/13
+  y ADR-0008 conserva estado `proposed`;
+- JSON, enlaces, LoopKit, diff, alcance, secretos y revisión adversarial pasan
+  con evidencia fresca.
+
+## Ruta de evaluación
+
+Esta sesión sólo valida documentos. El spike posterior se evaluará en un equipo
+Windows objetivo mediante instalación/desinstalación, dos impresoras térmicas
+reales cuando estén disponibles, usuario estándar y administrador, red
+conectada/desconectada, spooler normal/bloqueado y antivirus activo. Cada ciclo
+SPK define su procedimiento exacto antes de ejecutarse.
 
 ## No tocar
 
-- código, SQL ejecutable, migraciones, manifests, dependencias, componentes,
-  pantallas, servicios, CI o infraestructura;
-- reglas de dominio aceptadas y lógica original de LoopKit;
-- runtime final del agente Tauri o funcionalidades de fases futuras;
+- código, Rust, Node, proyecto Tauri, manifests, dependencias, CI, servicios,
+  impresoras o infraestructura;
+- pedidos productivos, facturación, multi-sucursal, diseñador de tickets,
+  telemetría productiva u offline-first;
+- decisiones aceptadas anteriores o lógica original de LoopKit;
 - staging, commits o remotos.
 
 ## Detenerse si
 
-- `phase-0-stack-review` no está versionado o el árbol no parte limpio;
-- una decisión contradice ADR-0001 a ADR-0008;
-- una protección depende sólo del frontend o de una RLS no verificable;
-- aparece un cambio ajeno al alcance o habría que debilitar un control.
+- el gate de datos/autenticación deja de estar versionado o aparece un cambio
+  ajeno;
+- el plan promete certeza física después de `submitted-to-os`;
+- se elige plugin, driver, protocolo, instalador o canal de actualización sin
+  evidencia del spike;
+- se intenta aceptar ADR-0008, desbloquear Fase 1 o reducir un control;
+- el diff incorpora cualquier artefacto ejecutable o secreto real.
 
-## Ruta de verificación
+## Sprint contract — 2026-07-29
 
-Parseo de ledger, resolución de enlaces, validación estructural de modelo/ADR y
-25 escenarios, búsqueda de secretos y artefactos prohibidos, validadores
-LoopKit, `git diff --check` y revisión adversarial fría contra este contrato.
+Entregable: plan documental reproducible para ejecutar y decidir el spike de
+impresión Tauri 2 en sesiones posteriores.
+
+Predicados de aceptación:
+
+- [ ] cuatro entregables `docs/spikes/` existen y sus enlaces resuelven;
+- [ ] 20 capacidades, 25 escenarios, 10 ciclos y 4 transportes están cubiertos;
+- [ ] cada ciclo declara objetivo, entradas, salida, criterios, pruebas,
+      evidencia, rollback y prohibiciones;
+- [ ] métricas y hardware pendiente se registran sin resultados inventados;
+- [ ] ADR-0008 permanece `proposed` y enlaza el plan y sus criterios;
+- [ ] ledger parsea con cero `completed`, spikes `specified` y Fase 1 bloqueada;
+- [ ] validación documental, LoopKit, alcance, secretos y revisión fría pasan.
+
+Fuera de alcance: ejecutar el spike, instalar toolchain o dependencias, elegir
+definitivamente Tauri/QZ, diseñar interfaz o integrar pedidos reales.

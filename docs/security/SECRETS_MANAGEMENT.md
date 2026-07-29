@@ -10,6 +10,7 @@
 | migrator/database admin | secret CI de vida corta | job de migración | por ejecución o ventana |
 | signing private keys/JWT legacy | Supabase únicamente | Auth | proceso de key rotation |
 | credencial agente | almacén seguro Windows + hash/estado servidor | agente/API | por dispositivo, revocable |
+| token efímero de spike | inyección local fuera del repo + servidor simulado | agente descartable | revocar al terminar cada ejecución |
 | firma de actualización | HSM/secret manager de release | pipeline autorizado | ceremonia y revocación |
 | deployment/provider token | secret manager CI | deploy | mínimo scope y vida corta |
 | Sentry/observabilidad secret | secret manager por componente | API/agent | rotar; DSN pública separada |
@@ -60,3 +61,19 @@ y revisar historial; borrarlo del último commit no es suficiente.
 - variables protegidas y logs CI redactados;
 - prueba de revocación de agente/API/deploy;
 - runbook para signing key y service-role compromise.
+
+## Reglas específicas del spike de impresión
+
+- sólo identidad, organización y trabajos ficticios;
+- token distinto por equipo/ejecución, scope mínimo y expiración corta;
+- nunca usar Supabase, service role, DB, deploy o firma productivos;
+- evaluar almacén seguro Windows sin persistir el valor en evidencia;
+- capturas, tráfico y logs se escanean/redactan antes de adjuntar;
+- un canario verifica que token, ticket completo y observaciones no aparecen;
+- una clave privada de update/firma no se genera en el plan; en SPK-PRINT-009 se
+  usa material de prueba aislado, se destruye/revoca y sólo se conserva la clave
+  pública/huella;
+- robo/replay, dos agentes con identidad repetida y revocación son casos
+  obligatorios.
+
+Referencia: [`PRINTING_SPIKE_PLAN.md`](../spikes/PRINTING_SPIKE_PLAN.md).

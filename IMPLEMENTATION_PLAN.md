@@ -1,115 +1,129 @@
 STATUS: planning
 CURRENT_PHASE: phase-0
-PHASE_STATUS: data-and-auth-review
-CURRENT_FEATURE: phase-0-data-and-auth-review
-NEXT_GATE: phase-0-printing-spike-plan
+PHASE_STATUS: printing-spike-plan
+CURRENT_FEATURE: phase-0-printing-spike-plan
+NEXT_GATE: phase-0-printing-spike
 FEATURE_CATALOG_ID: CORE-001
 
 # Plan de implementación
 
 ## Objetivo del ciclo
 
-Definir la dirección física de PostgreSQL, Auth, sesiones, tenancy, RLS,
-transacciones, idempotencia, migraciones, secretos, recuperación y contratos del
-MVP. Es una única revisión documental de `CORE-001`: no completa la
-funcionalidad, no implementa `AUTH-001` y no habilita Fase 1.
+Especificar un spike descartable y medible para decidir si Tauri 2 es adecuado
+como runtime del agente local de impresión del MVP. Esta sesión sólo entrega el
+contrato de ejecución; no prueba Tauri, impresoras, instaladores ni protocolo.
 
-## Resultado de revisión
+## Resultado documental
 
-Veredicto final documental: `approved-with-actions`.
+Veredicto documental final: `approved-with-actions`.
 
-Las decisiones son implementables y coherentes con ADR-0001 a ADR-0008. Siguen
-sin evidencia ejecutable de producto: schema, RLS, migraciones, Auth, OpenAPI,
-restore y carreras deben materializarse en sesiones futuras.
+Quedan especificados 20 capacidades, 25 escenarios adversariales, cuatro
+transportes, dos tickets, métricas, hardware y diez ciclos. ADR-0008 continúa
+`proposed`; `PRINT-001`, `PRINT-002` y toda Fase 1 siguen bloqueados.
 
-## Autoridad aprobada
+## Contrato del spike
 
-1. Supabase Auth autentica identidad.
-2. Fastify aplica autorización, casos de uso y dominio.
-3. PostgreSQL conserva datos e invariantes.
-4. RLS es defensa adicional.
-5. Frontend no decide organización ni tiene CRUD comercial directo.
-6. Session context + membership activa derivan organización/rol.
-7. Operaciones sensibles pasan por Fastify.
-8. Realtime Broadcast privado avisa; API/DB siguen siendo autoridad.
-
-## Decisiones del ciclo
-
-- ADR-0009: modelo físico, tenant en filas, FK compuestas, RLS y constraints.
-- ADR-0010: Auth PKCE, JWT/JWKS, session contexts y authz DB viva.
-- ADR-0011: Supabase CLI SQL, forward-only/expand-contract, PITR y restore.
-- ADR-0012: Zod como fuente; Fastify/OpenAPI/cliente generados.
+- Windows 11 x64 soportado es objetivo primario.
+- Windows 10 sólo se prueba como compatibilidad condicionada LTSC/ESU.
+- Tauri 2 es candidato; QZ Tray es contingencia bajo el mismo gate.
+- NSIS per-user y polling HTTPS saliente son hipótesis, no decisiones.
+- Driver/spooler Windows y raw ESC/POS se comparan según hardware.
+- `submitted-to-os` no prueba papel; `delivery-unknown` nunca reintenta solo.
+- Sólo trabajos ya recibidos pueden concluir durante una caída de Internet.
+- Hardware, AV/firewall, estándar/admin y ciclo de instalación son obligatorios.
 
 ## Plan → Act → Verify
 
 ### Plan
 
-- comprobar stack versionado y árbol limpio;
-- leer fuentes, ADR, quality gates y skills aplicables;
-- fijar contrato verificable antes de modificar diseño.
+- confirmar commit del gate anterior y árbol limpio;
+- leer fuentes, ADR, quality gates y skills;
+- fijar `PROMPT.md` antes de redactar entregables;
+- contrastar hechos variables con fuentes oficiales.
 
 ### Act
 
-- describir tablas, keys, relaciones, constraints, índices y retención;
-- fijar límites transaccionales e idempotencia;
-- definir Auth, sesión, autorización, RLS y secretos;
-- decidir migraciones, backup/restore y contratos;
-- coordinar arquitectura, dominio, calidad, ledger, memoria y changelog;
-- documentar 25 escenarios adversariales.
+- crear plan, matriz, ficha y criterios go/no-go;
+- convertir preguntas y riesgos en experimentos;
+- definir tickets/cola/comunicación/seguridad/logs/métricas;
+- dividir ejecución en SPK-PRINT-001–010;
+- sincronizar arquitectura, calidad, secretos, ADR, ledger y memoria.
 
 ### Verify
 
-1. 25 escenarios con seis campos de refutación;
-2. inventario físico y 12 transacciones cubiertos;
-3. ADR-0009 a ADR-0012 válidos/coherentes;
-4. JSON parseable, cero completed y 13/13 Fase 1 bloqueadas;
-5. enlaces locales y referencias ADR resuelven;
-6. cero SQL/migraciones/manifests/dependencias/código/secretos;
-7. validadores LoopKit y `run.sh`;
-8. `git diff --check`, cero staging y revisión adversarial fría.
+1. JSON parseable, cero `completed`, diez spikes `specified`;
+2. Fase 1 bloqueada 13/13 y `PRINT-001`/`PRINT-002` bloqueados;
+3. ADR-0008 contiene `proposed` y enlaza plan/criterios;
+4. 20 capacidades, 25 escenarios, 10 ciclos y 4 transportes;
+5. cada ciclo cubre ocho campos contractuales;
+6. enlaces Markdown resuelven;
+7. LoopKit y `run.sh` validan;
+8. revisión adversarial fría y red flags sin hallazgos;
+9. cero código, manifests, dependencias, secretos, staging, commit o push;
+10. `git diff --check` verde.
+
+## Estado de ciclos
+
+| Ciclo | Estado | Bloqueo principal |
+|---|---|---|
+| SPK-PRINT-001 | specified | toolchain y Windows objetivo no inicializados |
+| SPK-PRINT-002 | specified | hardware/adapter no inventariados |
+| SPK-PRINT-003 | specified | impresora cocina no registrada |
+| SPK-PRINT-004 | specified | impresora caja no registrada |
+| SPK-PRINT-005 | specified | dos roles físicos no validados |
+| SPK-PRINT-006 | specified | estado local descartable no elegido |
+| SPK-PRINT-007 | specified | servidor simulado no creado |
+| SPK-PRINT-008 | specified | cola/transporte no ejecutados |
+| SPK-PRINT-009 | specified | artefacto instalable no existe |
+| SPK-PRINT-010 | specified | evidencia 001–009 ausente |
 
 ## Estado de fases
 
 | Fase | Estado | Motivo |
 |---|---|---|
-| Fase 0 | in-progress | Data/auth decidido; spikes y materialización técnica siguen pendientes |
-| Fase 1 | blocked | Fase 0 y sus gates ejecutables no están cerrados |
+| Fase 0 | in-progress | plan de spike listo; ejecución y otros gates pendientes |
+| Fase 1 | blocked | Fase 0 no está cerrada |
 | Fase 1.5 | blocked | Fase 1 no está cerrada |
 | Fase 2 | blocked | Fase 1.5 no está cerrada |
 | Fase 3 | blocked | Fase 2 no está cerrada |
 | Fase 4 | blocked | Fase 3 no está cerrada |
 
-## Acciones y bloqueos restantes
+## Decisiones y riesgos pendientes
 
-- planificar/ejecutar spike Tauri y protocolo/agente de impresión;
-- inicializar toolchain sólo con sesión autorizada;
-- crear y probar migrations/schema/RLS/Auth/contratos;
-- seleccionar proveedor/plan/región/secret manager y habilitar PITR;
-- ejecutar restore, concurrencia, seguridad, rendimiento y hardware;
-- validar retención legal/fiscal y privacidad en Bolivia.
+- modelo exacto de ambas impresoras, ancho, driver, conexión, ESC/POS y corte;
+- API/plugin/adaptador de impresión después de revisión de mantenimiento;
+- identidad estable de impresora después de pruebas físicas;
+- MSI frente a NSIS y estrategia WebView2 offline;
+- polling frente a WebSocket y contrato/lease final;
+- persistencia local descartable y luego productiva;
+- firma, updater, almacenamiento seguro y operación de soporte;
+- baselines y presupuestos definitivos;
+- decisión `GO | NO-GO | NEEDS-FOLLOW-UP` y aceptación/rechazo de ADR-0008.
 
-## Evidencia del ciclo
+## Evidencia documental
 
 Evidencia ejecutada el 2026-07-29:
 
 | Control | Resultado |
 |---|---|
-| Precondiciones Git | `main`, base versionada `86c4b14`, árbol inicialmente limpio |
-| Ledger | JSON parseable; `completed=0`; Fase 1 bloqueada `13/13`; siguiente gate correcto |
-| Enlaces Markdown | 120 documentos, 58 enlaces locales, 0 rotos |
-| Cobertura contractual | 25 escenarios adversariales; 12 operaciones obligatorias en 13 filas transaccionales; ADR-0009–0012 presentes |
-| LoopKit | frontmatter válido `53/53`; `bash -n run.sh` verde |
-| Alcance y secretos | 0 código, SQL, migraciones, manifests, dependencias o secretos de alta confianza añadidos |
-| Integridad del diff | `git diff --check` verde; staging vacío |
-| Revisión fría | dos iteraciones rechazaron 7 incoherencias; tercera iteración `PASS`, 0 hallazgos |
+| Precondiciones | `main`; árbol inicial limpio; gate previo en `ed4125a` |
+| Ledger | JSON válido; 0 `completed`; 10/10 SPK `specified`; Fase 1 bloqueada 13/13 |
+| ADR/gates | ADR-0008 `proposed`; `PRINT-001`/`PRINT-002` bloqueados; siguiente gate correcto |
+| Cobertura | 20 capacidades; 25 escenarios; 10 ciclos × 8 campos; 4 transportes |
+| Contratos | 11 eventos; 11 campos de cola; 15 riesgos; dos perfiles de equipo |
+| Enlaces | 124 Markdown; 72 enlaces locales; 0 rotos |
+| LoopKit | 53/53 skills válidos; `bash -n run.sh` verde |
+| Alcance/secretos | 15 archivos; 0 código, manifests, dependencias o secretos de alta confianza |
+| Git | `git diff --check` verde; staging vacío |
+| Revisión fría | primera pasada `FAIL` con 4 hallazgos; segunda `PASS`, 0 hallazgos |
 
-Typecheck, tests de producto, build, migraciones, pgTAP y restore continúan
-`blocked` porque no existe implementación; no se declaran verdes por
-documentación. Schema, RLS, Auth, concurrencia, PITR/restore y contratos requieren
-evidencia ejecutable en sesiones futuras.
+No se declaran verdes instalación, impresión, hardware, AV, offline,
+actualización o rendimiento: permanecen `not-tested`/`INSUFFICIENT`. Typecheck,
+tests de producto y build siguen `blocked` porque no existe implementación.
 
 ## Siguiente paso recomendado — no ejecutar
 
-Ejecutar una única sesión `phase-0-printing-spike-plan` para convertir ADR-0008
-en un plan de spike medible sobre Windows e impresoras reales, sin desarrollar el
-agente ni inicializar la aplicación.
+Ejecutar una única sesión `SPK-PRINT-001` para bootstrap, instalación,
+ejecución/desinstalación y baseline inicial en Windows objetivo. Antes deberá
+autorizarse explícitamente la instalación de Rust/Node/Tauri y dependencias del
+spike.

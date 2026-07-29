@@ -32,6 +32,9 @@ versionado semántico cuando exista una primera versión publicable.
 - ADR-0009 a ADR-0012 para datos/tenancy, auth, migraciones/recuperación y
   autoridad OpenAPI.
 - Veinticinco escenarios adversariales específicos de datos y autenticación.
+- Plan, matriz, ficha de hardware y criterios go/no-go para el spike Tauri 2.
+- Diez ciclos `SPK-PRINT-001` a `SPK-PRINT-010`, veinte capacidades y
+  veinticinco escenarios adversariales de impresión.
 
 ### Changed
 
@@ -69,6 +72,12 @@ versionado semántico cuando exista una primera versión publicable.
   previo al piloto y restore obligatorio.
 - Siguiente gate cambiado a `phase-0-printing-spike-plan`; Fase 1 continúa
   bloqueada.
+- Spike de impresión convertido en contrato ejecutable por ciclos, con Windows
+  11 soportado como objetivo primario y Windows 10 condicionado a LTSC/ESU.
+- Polling HTTPS saliente, NSIS per-user, spooler/driver y raw ESC/POS quedaron
+  como hipótesis comparables, no decisiones aceptadas.
+- Siguiente gate cambiado a `phase-0-printing-spike`; ADR-0008 sigue `proposed`
+  y Fase 1 permanece bloqueada.
 
 ### Security
 

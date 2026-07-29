@@ -29,7 +29,7 @@ numéricos con contexto de dispositivo, red, carga y percentil.
 | Confirmar pedido | persistencia real | red normal y API | p95 ≤ 1 s sin impresión |
 | API | primer caso de uso real | carga normal acordada | lectura p95 ≤ 500 ms; comando p95 ≤ 800 ms |
 | Actualización de cocina | `KITCHEN-001` ejecutable | dos clientes y transporte real | aviso p95 ≤ 2 s; convergencia fallback ≤ 10 s |
-| Cola de impresión | agente/spike real | agente y hardware identificados | claim online ≤ 5 s; envío a OS ≤ 3 s tras claim |
+| Cola de impresión | agente/spike real | agente y hardware identificados | objetivos previos claim ≤ 5 s/envío OS ≤ 3 s se contrastan; spike fija baseline antes de aprobarlos |
 | Tamaño de recursos | primer build | Brotli/gzip y caché | JS inicial gzip ≤ 250 KiB; transferencia inicial ≤ 500 KiB |
 | Consultas de base de datos | persistencia aprobada | datos/plan representativos | dentro del presupuesto del caso de uso |
 | Conexión lenta | primer recorrido E2E | slow 4G reproducible | shell utilizable ≤ 5 s y feedback inmediato |
@@ -48,6 +48,24 @@ para ocultar una regresión.
 6. Identificar cuello de botella sin modificar criterios funcionales.
 7. Proponer umbral y justificarlo contra necesidad de usuario.
 8. Aprobar el presupuesto y registrar fecha.
+
+### Baseline del agente de impresión
+
+SPK-PRINT-001–010 registra, sin aprobar todavía umbrales numéricos:
+
+- inicio frío/caliente, RAM/CPU en reposo y durante impresión;
+- recepción→claim→envío al OS y variación por driver/raw;
+- 20 impresiones consecutivas de cada ticket, fallos e incertidumbre;
+- recovery después de proceso/OS/red y conteo de duplicados;
+- tamaño del instalador, huella instalada, tiempos y residuos;
+- impacto de WebView2, AV, firewall, spooler y offline;
+- estabilidad de identidad después de reboot/USB/renombre/driver.
+
+Se conservan muestras crudas, mediana, p95 observado, mínimo/máximo y ambiente.
+Cero duplicados automáticos, cero secretos y ausencia de elevación permanente
+son criterios funcionales bloqueantes, no presupuestos que una media pueda
+compensar. La [regla de decisión](../spikes/PRINTING_GO_NO_GO.md) usa el baseline
+para evaluar complejidad proporcional.
 
 ## Condiciones lentas y fallos
 

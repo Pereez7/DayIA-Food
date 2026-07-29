@@ -113,8 +113,21 @@ de hipótesis transitorias.
   RTO 4 horas requieren simulacro.
 - 2026-07-29: ADR-0012 aceptó Zod como fuente runtime, con Fastify/OpenAPI/cliente
   generados y compatibilidad versionada.
+- 2026-07-29: `phase-0-printing-spike-plan` especificó SPK-PRINT-001 a
+  SPK-PRINT-010; ninguno fue ejecutado ni completado y ADR-0008 continúa
+  `proposed`.
+- 2026-07-29: Windows 11 x64 soportado es el objetivo primario del spike.
+  Windows 10 sólo se evalúa para LTSC/ESU representativo; Home/Pro fuera de
+  soporte no puede justificar `GO`.
+- 2026-07-29: NSIS per-user, polling HTTPS saliente, spooler/driver y raw
+  ESC/POS son hipótesis que el spike debe comparar, no decisiones vigentes.
+- 2026-07-29: la decisión de impresión exige dos impresoras reales, estándar y
+  administrador, AV/firewall activos, 20 impresiones por ticket, crash/replay,
+  offline limitado, instalación/update/uninstall y revisión adversarial.
+- 2026-07-29: un estado del spooler sólo permite `submitted-to-os`; papel físico
+  incierto conserva `delivery-unknown` sin reintento automático.
 
 ## Próximo paso
 
-Ejecutar `phase-0-printing-spike-plan` sin desarrollar el agente ni inicializar
-la aplicación.
+Ejecutar una única sesión `SPK-PRINT-001` sólo después de autorizar toolchain y
+dependencias del spike; no agrupar todavía los diez ciclos.

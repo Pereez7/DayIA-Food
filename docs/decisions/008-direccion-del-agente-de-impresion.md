@@ -10,8 +10,10 @@ como desktop aumentaría operación y acoplamiento.
 
 Aceptar la separación web/agente y la comunicación HTTPS saliente con la API.
 Mantener Tauri 2 como candidato preferido, condicionado al spike definido en
-`PRINTING_ARCHITECTURE.md`. QZ Tray es la contingencia si Tauri no demuestra
-instalación, hardware, firma, actualización y resiliencia.
+[`PRINTING_SPIKE_PLAN.md`](../spikes/PRINTING_SPIKE_PLAN.md). QZ Tray es la
+contingencia si Tauri no demuestra instalación, hardware, firma, actualización
+y resiliencia con la
+[misma regla de decisión](../spikes/PRINTING_GO_NO_GO.md).
 
 No se selecciona todavía una librería ESC/POS, protocolo exacto, instalador ni
 canal de actualización.
@@ -31,6 +33,12 @@ canal de actualización.
 `PRINT-001` y `PRINT-002` siguen bloqueadas. El spike debe ejecutarse con Windows,
 antivirus y dos impresoras objetivo. Ningún resultado simulado prueba papel
 físico; reinicio y `delivery-unknown` conservan intervención humana.
+
+Los criterios para proponer aceptación son: instalación/operación sin elevación
+permanente, selección inequívoca de cocina/caja, ambos tickets y español/BOB,
+cero duplicados automáticos, recuperación y offline limitado, fallos
+observables, seguridad mínima, AV/firewall activos y complejidad proporcional.
+Una ausencia de hardware o evidencia produce `INSUFFICIENT`, no aceptación.
 
 ## Estado
 

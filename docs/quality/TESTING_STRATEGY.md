@@ -112,6 +112,26 @@ Son obligatorias para `PRINT-001`, `PRINT-002`, Fase 1.5 y el release del MVP:
 
 Una prueba mock no demuestra impresión física.
 
+### Gate previo: spike del agente
+
+Antes de implementar `PRINT-001`/`PRINT-002`, SPK-PRINT-001–010 siguen
+[`PRINTING_SPIKE_PLAN.md`](../spikes/PRINTING_SPIKE_PLAN.md):
+
+- matriz Windows 11 soportado, cuenta estándar/admin, WebView2 y MSI/NSIS;
+- inventario/identidad de cocina y caja con reboot, USB, renombre y driver;
+- fixtures 58/80 mm, español/BOB, corte y silencio por driver/raw;
+- 20 impresiones consecutivas por ticket y conteo físico/lógico;
+- kill antes/después del envío, replay, dos instancias y disco lleno;
+- polling/WebSocket/HTTP local/archivo comparados con auth y replay;
+- offline limitado y reconciliación sin duplicado;
+- AV/firewall activos, payload hostil, logs redactados y updater firmado;
+- baseline de inicio, CPU, RAM, latencia, instalador y recuperación;
+- dossier independiente contra criterios `GO | NO-GO | NEEDS-FOLLOW-UP`.
+
+Cada ciclo conserva versión/hash, hardware, entorno, pasos, resultados y
+artefactos. Resultado no ejecutado es `not-tested`; mock, documentación del
+proveedor o estado del spooler no demuestran papel.
+
 ## Reconexión y duplicados
 
 Para operaciones susceptibles a repetición:

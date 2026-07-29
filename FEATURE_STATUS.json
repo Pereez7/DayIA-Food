@@ -3,7 +3,7 @@
   "current_phase": "phase-0",
   "phase_status": "in-progress",
   "current_feature": "CORE-001",
-  "next_gate": "phase-0-printing-spike-plan",
+  "next_gate": "phase-0-printing-spike",
   "scope_decision": "ADR-0001",
   "domain_decisions": [
     "ADR-0002",
@@ -14,7 +14,6 @@
     "ADR-0005",
     "ADR-0006",
     "ADR-0007",
-    "ADR-0008",
     "ADR-0009",
     "ADR-0010",
     "ADR-0011",
@@ -71,6 +70,206 @@
         "physical schema, RLS, auth and migrations not implemented",
         "print-agent spike pending",
         "quality commands selected but not configured"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-001",
+      "name": "Bootstrap e instalación mínima Tauri",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "windows-install",
+        "standard-user",
+        "uninstall",
+        "artifact-inventory"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [],
+      "blockers": [
+        "spike toolchain not initialized",
+        "Windows target environment not recorded"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-002",
+      "name": "Enumeración e identidad de impresoras",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "real-hardware",
+        "printer-enumeration",
+        "identity-stability",
+        "dependency-review"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-001"
+      ],
+      "blockers": [
+        "target printers not inventoried"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-003",
+      "name": "Ticket térmico de cocina",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "real-hardware",
+        "silent-print",
+        "spanish-characters",
+        "failure-modes"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-002"
+      ],
+      "blockers": [
+        "kitchen printer not recorded"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-004",
+      "name": "Ticket térmico de caja",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "real-hardware",
+        "silent-print",
+        "bob-format",
+        "failure-modes"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-002"
+      ],
+      "blockers": [
+        "cash printer not recorded"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-005",
+      "name": "Selección de cocina y caja",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "real-hardware",
+        "printer-binding",
+        "wrong-destination",
+        "disconnect-recovery"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-003",
+        "SPK-PRINT-004"
+      ],
+      "blockers": [
+        "two target printer roles not validated"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-006",
+      "name": "Cola, idempotencia y reinicio",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "queue",
+        "idempotency",
+        "crash-recovery",
+        "single-instance"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-005"
+      ],
+      "blockers": [
+        "discardable local state mechanism not selected"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-007",
+      "name": "Comunicación simulada del agente",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "contract",
+        "transport-comparison",
+        "authentication",
+        "replay-protection"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-006"
+      ],
+      "blockers": [
+        "simulated server not available"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-008",
+      "name": "Fallos, offline limitado y recuperación",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "offline",
+        "reconnection",
+        "fault-injection",
+        "no-duplicates"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-007"
+      ],
+      "blockers": [
+        "queue and simulated transport not executed"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-009",
+      "name": "Seguridad, antivirus e instalación",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "security",
+        "antivirus-firewall",
+        "installer-update",
+        "secret-scan"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-008"
+      ],
+      "blockers": [
+        "installable spike artifact not available"
+      ]
+    },
+    {
+      "id": "SPK-PRINT-010",
+      "name": "Informe y decisión de ADR-0008",
+      "phase": "phase-0",
+      "status": "specified",
+      "priority": "critical",
+      "tests_required": [
+        "evidence-review",
+        "go-no-go",
+        "adversarial-review",
+        "hardware-evidence"
+      ],
+      "verification_status": "not-started",
+      "dependencies": [
+        "SPK-PRINT-009"
+      ],
+      "blockers": [
+        "SPK-PRINT-001 through SPK-PRINT-009 not completed"
       ]
     },
     {
